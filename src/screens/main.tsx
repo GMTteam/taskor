@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Text, useColorMode } from 'native-base';
 import { Center, Box, VStack, useColorModeValue } from 'native-base';
 import ThemeToggle from '../components/theme-toggle';
+import AnimatedCheckbox from '../components/animated-checkbok';
 
 export default function MainScreen() {
     const { colorMode } = useColorMode();
@@ -14,6 +15,9 @@ export default function MainScreen() {
             flex={1}
         >
             <VStack space={5} alignItems="center">
+                <Box w="100px" h="100px">
+                    <AnimatedCheckbox />
+                </Box>
                 <Box p={10} bg={useColorModeValue('red.500', 'yellow.500')}>
                     <Text color={colorMode === 'dark' ? 'white' : 'black'}>
                         Hello Shiva Coder
