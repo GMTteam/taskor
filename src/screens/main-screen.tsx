@@ -1,7 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Text, useColorMode } from 'native-base';
-import { Pressable } from 'react-native';
-import { Center, Box, VStack, useColorModeValue } from 'native-base';
+import { Center, Box, VStack } from 'native-base';
 import ThemeToggle from '../components/theme-toggle';
 import TaskItem from '../components/task-item';
 
@@ -11,7 +9,7 @@ export default function MainScreen() {
         setChecked(prev => !prev);
     }, []);
 
-    const { colorMode } = useColorMode();
+
 
     return (
         <Center 
@@ -20,10 +18,11 @@ export default function MainScreen() {
             px={4}
             flex={1}
         >
-            <VStack space={5} alignItems="center">
+            <VStack space={5} alignItems="center" w="full">
                 <TaskItem isDone={checked} onToggleCheckbox={handlePressCheckbox}/>
                 <ThemeToggle />
             </VStack>
         </Center>
     );
 }
+
