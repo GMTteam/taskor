@@ -4,10 +4,14 @@ import {
   Box,
   Text,
   VStack,
+  Icon,
   Image,
   useColorModeValue
 } from 'native-base'
 import AnimatedColorBox from '../components/animated-color-box'
+import Navbar from '../components/navbar'
+import Masthead from '../components/masthead'
+
 
 const AboutScreen = () => {
   return (
@@ -16,6 +20,12 @@ const AboutScreen = () => {
       bg={useColorModeValue('warmGray.50', 'warmGray.900')}
       w="full"
     >
+      <Masthead
+        title="About You"
+        image={require('../assets/masthead.png')}
+      >
+        <Navbar />
+      </Masthead>
       <ScrollView
         borderTopLeftRadius="20px"
         borderTopRightRadius="20px"
