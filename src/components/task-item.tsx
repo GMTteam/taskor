@@ -50,11 +50,11 @@ const TaskItem = (props: Props) => {
 
   const checkmarkColor = useToken('colors', useColorModeValue('white', 'white'))
 
-  const activeTextColor = useToken(
+  const doneTextColor = useToken(
     'colors',
     useColorModeValue('darkText', 'lightText')
   )
-  const doneTextColor = useToken(
+  const activeTextColor = useToken(
     'colors',
     useColorModeValue('muted.400', 'muted.600')
   )
@@ -115,8 +115,8 @@ const TaskItem = (props: Props) => {
           />
         ) : (
           <AnimatedTaskLabel
-            textColor={doneTextColor}
-            inactiveTextColor={activeTextColor}
+            textColor={activeTextColor}
+            inactiveTextColor={doneTextColor}
             strikeThrough={isDone}
             onPress={onPressLabel}
           >
