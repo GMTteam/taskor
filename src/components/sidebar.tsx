@@ -24,6 +24,9 @@ const Sidebar = (props: DrawerContentComponentProps) => {
   const handlePressMenuMain = useCallback(() => {
     navigation.navigate('Main')
   }, [navigation])
+  const handlePressCategoryMain = useCallback(() => {
+    navigation.navigate('Category')
+  }, [navigation])
   const handlePressMenuAbout = useCallback(() => {
     navigation.navigate('About')
   }, [navigation])
@@ -67,6 +70,13 @@ const Sidebar = (props: DrawerContentComponentProps) => {
           icon="inbox"
         >
           Tasks
+        </MenuButton>
+        <MenuButton
+          active={currentRoute === 'Category'}
+          onPress={handlePressCategoryMain}
+          icon="inbox"
+        >
+          Categories
         </MenuButton>
         <MenuButton
           active={currentRoute === 'About'}
