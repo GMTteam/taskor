@@ -1,17 +1,21 @@
-import React from 'react'
-import { createDrawerNavigator } from '@react-navigation/drawer'
-import MainScreen from './screens/main-screen'
-import AboutScreen from './screens/about-screen'
-import Sidebar from './components/sidebar'
-import CategoriesScreen from './screens/categories-screen'
+import React from 'react';
+import { DrawerContentComponentProps, createDrawerNavigator } from '@react-navigation/drawer';
+import MainScreen from './screens/main-screen';
+import AboutScreen from './screens/about-screen';
+import Sidebar from './components/sidebar';
+import CategoriesScreen from './screens/categories-screen';
 
-const Drawer = createDrawerNavigator()
+const Drawer = createDrawerNavigator();
 
 const App = () => {
+  const CustomDrawerContent = (props: DrawerContentComponentProps) => {
+    return <Sidebar {...props} />;
+  };
+
   return (
     <Drawer.Navigator
       initialRouteName="Main"
-      drawerContent={props => <Sidebar {...props} />}
+      drawerContent={CustomDrawerContent}
       screenOptions={{
         headerShown: false,
         drawerType: 'back',
@@ -22,7 +26,7 @@ const App = () => {
       <Drawer.Screen name="About" component={AboutScreen} />
       <Drawer.Screen name="Category" component={CategoriesScreen} />
     </Drawer.Navigator>
-  )
-}
+  );
+};
 
-export default App
+export default App;

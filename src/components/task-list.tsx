@@ -6,7 +6,12 @@ import {
 } from 'react-native-gesture-handler'
 import TaskItem from './task-item'
 import { makeStyledComponent } from '../utils/styled'
-
+import  {
+  NestableDraggableFlatList,
+  NestableScrollContainer,
+  RenderItemParams,
+  ScaleDecorator,
+} from "react-native-draggable-flatlist";
 const StyledView = makeStyledComponent(View)
 const StyledScrollView = makeStyledComponent(ScrollView)
 
@@ -24,6 +29,7 @@ interface TaskListProps {
   onFinishEditing: (item: TaskItemData) => void
   onPressLabel: (item: TaskItemData) => void
   onRemoveItem: (item: TaskItemData) => void
+  onUpdateItem: (item: TaskItemData[]) => void
 }
 
 interface TaskItemProps
@@ -35,6 +41,8 @@ interface TaskItemProps
   onFinishEditing: (item: TaskItemData) => void
   onPressLabel: (item: TaskItemData) => void
   onRemove: (item: TaskItemData) => void
+  onLongPress?: () => void
+  isActiveDrop? : boolean
 }
 
 export const AnimatedTaskItem = (props: TaskItemProps) => {
@@ -46,7 +54,9 @@ export const AnimatedTaskItem = (props: TaskItemProps) => {
     onChangeSubject,
     onFinishEditing,
     onPressLabel,
-    onRemove
+    onRemove,
+    onLongPress,
+    isActiveDrop
   } = props
   const handleToggleCheckbox = useCallback(() => {
     onToggleItem(data)
@@ -95,6 +105,8 @@ export const AnimatedTaskItem = (props: TaskItemProps) => {
         onFinishEditing={handleFinishEditing}
         onPressLabel={handlePressLabel}
         onRemove={handleRemove}
+        onLongPress={() => onLongPress && onLongPress()}
+        isActiveDrop = {isActiveDrop}
       />
     </StyledView>
   )
@@ -108,15 +120,20 @@ export default function TaskList(props: TaskListProps) {
     onChangeSubject,
     onFinishEditing,
     onPressLabel,
-    onRemoveItem
+    onRemoveItem,
+    onUpdateItem
   } = props
   const refScrollView = useRef(null)
 
-  return (
-    <StyledScrollView ref={refScrollView} w="full">
-      <AnimatePresence>
-        {data.map(item => (
-          <AnimatedTaskItem
+  const handleUpdateDragAndDrop = (newList : TaskItemData[]) => {
+    onUpdateItem(newList)
+  }
+  const renderItem = ({ item, drag, isActive }: RenderItemParams<TaskItemData>) => {
+    return (
+      <ScaleDecorator
+        activeScale={1.1}
+      >
+        <AnimatedTaskItem
             key={item.id}
             data={item}
             simultaneousHandlers={refScrollView}
@@ -125,10 +142,21 @@ export default function TaskList(props: TaskListProps) {
             onChangeSubject={onChangeSubject}
             onFinishEditing={onFinishEditing}
             onPressLabel={onPressLabel}
-            onRemove={onRemoveItem}
-          />
-        ))}
-      </AnimatePresence>
-    </StyledScrollView>
+            onRemove={() => {onRemoveItem(item)}}
+            onLongPress={drag}
+            isActiveDrop = {isActive}
+        />
+      </ScaleDecorator>
+    );
+  };
+  return (
+    <NestableScrollContainer>
+    <NestableDraggableFlatList
+    data={data}
+    onDragEnd={({ data }) => handleUpdateDragAndDrop(data)}
+    keyExtractor={(item) => item.id}
+    renderItem={renderItem}
+  />
+    </NestableScrollContainer>
   )
 }

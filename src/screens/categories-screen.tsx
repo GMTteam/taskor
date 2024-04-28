@@ -1,64 +1,23 @@
 import React, { useCallback, useState } from 'react'
-import { Icon, VStack, useColorModeValue, Fab } from 'native-base'
+import { Icon, VStack, useColorModeValue, Fab, FlatList } from 'native-base'
 import { AntDesign } from '@expo/vector-icons'
 import AnimatedColorBox from '../components/animated-color-box'
-import TaskList from '../components/task-list'
-import shortid from 'shortid'
 import Masthead from '../components/masthead'
 import NavBar from '../components/navbar'
+import AddCategoryModal from '../components/add-category-modal'
+import CategoryItem from '../components/category-item'
+import { CategoriesType } from '../store/types';
+import useCategoryStore from '../store/categoryStore'
 
-const initialData = [
-  {
-    id: shortid.generate(),
-    subject: 'Buy movie tickets for Friday',
-    done: false
-  },
-  {
-    id: shortid.generate(),
-    subject: 'Make a React Native tutorial',
-    done: false
-  }
-]
 
 export default function CategoriesScreen() {
-  const [data, setData] = useState(initialData)
-  const [editingItemId, setEditingItemId] = useState<string | null>(null)
+  const [isShowModal, setIsShowModal] = useState(false)
+  const {categories, removeCategory}= useCategoryStore()
 
-const handleToggleTaskItem = useCallback((item: { id: string; subject: string; done: boolean }) => {
-    setData(prevData => {
-        const newData = [...prevData]
-        const index = prevData.indexOf(item)
-        newData[index] = {
-            ...item,
-            done: !item.done
-        }
-        return newData
-    })
-}, [])
-  const handleChangeTaskItemSubject = useCallback((item: { id: string; subject: string; done: boolean }, newSubject: any) => {
-    setData(prevData => {
-      const newData = [...prevData]
-      const index = prevData.indexOf(item)
-      newData[index] = {
-        ...item,
-        subject: newSubject
-      }
-      return newData
-    })
-  }, [])
-  const handleFinishEditingTaskItem = useCallback((_item: any) => {
-    setEditingItemId(null)
-  }, [])
-  const handlePressTaskItemLabel = useCallback((item: { id: React.SetStateAction<string | null> }) => {
-    setEditingItemId(item.id)
-  }, [])
-  const handleRemoveItem = useCallback((item: { id: string; subject: string; done: boolean }) => {
-    setData(prevData => {
-      const newData = prevData.filter(i => i !== item)
-      return newData
-    })
-  }, [])
-
+  const handleRemoveItem = (item : CategoriesType) => {
+    removeCategory(item.id)
+  }
+  const renderItem = (item : CategoriesType) => <CategoryItem item={item} onRemove={handleRemoveItem}/>; 
   return (
     <AnimatedColorBox
       flex={1}
@@ -66,7 +25,7 @@ const handleToggleTaskItem = useCallback((item: { id: string; subject: string; d
       w="full"
     >
       <Masthead
-        title="What's up, Shiva!"
+        title="Categories Screen"
         image={require('../assets/masthead.png')}
       >
         <NavBar />
@@ -80,14 +39,10 @@ const handleToggleTaskItem = useCallback((item: { id: string; subject: string; d
         borderTopRightRadius="20px"
         pt="20px"
       >
-        <TaskList
-          data={data}
-          onToggleItem={handleToggleTaskItem}
-          onChangeSubject={handleChangeTaskItemSubject}
-          onFinishEditing={handleFinishEditingTaskItem}
-          onPressLabel={handlePressTaskItemLabel}
-          onRemoveItem={handleRemoveItem}
-          editingItemId={editingItemId}
+        <FlatList
+          data={categories}
+          renderItem={({item}) =>renderItem(item) }
+          keyExtractor={(item) => item.id.toString()}
         />
       </VStack>
       <Fab
@@ -97,19 +52,9 @@ const handleToggleTaskItem = useCallback((item: { id: string; subject: string; d
         icon={<Icon color="white" as={<AntDesign name="plus" />} size="sm" />}
         colorScheme={useColorModeValue('blue', 'darkBlue')}
         bg={useColorModeValue('blue.500', 'blue.400')}
-        onPress={() => {
-          const id = shortid.generate()
-          setData([
-            {
-              id,
-              subject: '',
-              done: false
-            },
-            ...data
-          ])
-          setEditingItemId(id)
-        }}
+        onPress={() => setIsShowModal(true)}
       />
+      <AddCategoryModal isVisible={isShowModal} header='Add New Category' onClose={() => setIsShowModal(false)} />
     </AnimatedColorBox>
   )
 }

@@ -65,18 +65,18 @@ const Sidebar = (props: DrawerContentComponentProps) => {
           Shiva
         </Heading>
         <MenuButton
+          active={currentRoute === 'Category'}
+          onPress={handlePressCategoryMain}
+          icon="target"
+        >
+          Categories
+        </MenuButton>
+        <MenuButton
           active={currentRoute === 'Main'}
           onPress={handlePressMenuMain}
           icon="inbox"
         >
           Tasks
-        </MenuButton>
-        <MenuButton
-          active={currentRoute === 'Category'}
-          onPress={handlePressCategoryMain}
-          icon="inbox"
-        >
-          Categories
         </MenuButton>
         <MenuButton
           active={currentRoute === 'About'}

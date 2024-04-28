@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState } from 'react'
 import { PanGestureHandlerProps } from 'react-native-gesture-handler'
 import { NativeSyntheticEvent, TextInputChangeEventData } from 'react-native'
 import {
@@ -8,12 +8,13 @@ import {
   useColorModeValue,
   Icon,
   Input,
-  useToken
+  useToken,
+  IconButton
 } from 'native-base'
 import AnimatedCheckbox from 'react-native-checkbox-reanimated'
 import AnimatedTaskLabel from './animated-task-label'
 import SwipableView from './swipable-view'
-import { Feather } from '@expo/vector-icons'
+import { Feather, Entypo, MaterialIcons } from '@expo/vector-icons'
 
 interface Props extends Pick<PanGestureHandlerProps, 'simultaneousHandlers'> {
   isEditing: boolean
@@ -23,7 +24,9 @@ interface Props extends Pick<PanGestureHandlerProps, 'simultaneousHandlers'> {
   onRemove?: () => void
   onChangeSubject?: (subject: string) => void
   onFinishEditing?: () => void
+  onLongPress?: () => void
   subject: string
+  isActiveDrop?: boolean
 }
 
 const TaskItem = (props: Props) => {
@@ -36,9 +39,10 @@ const TaskItem = (props: Props) => {
     onRemove,
     onChangeSubject,
     onFinishEditing,
-    simultaneousHandlers
+    onLongPress,
+    simultaneousHandlers,
+    isActiveDrop
   } = props
-
   const highlightColor = useToken(
     'colors',
     useColorModeValue('blue.500', 'blue.400')
@@ -48,7 +52,7 @@ const TaskItem = (props: Props) => {
     useColorModeValue('muted.300', 'muted.500')
   )
 
-  const checkmarkColor = useToken('colors', useColorModeValue('white', 'white'))
+  const checkmarkColor = useToken('colors', useColorModeValue('black', 'white'))
 
   const doneTextColor = useToken(
     'colors',
@@ -67,6 +71,7 @@ const TaskItem = (props: Props) => {
   )
 
   return (
+
     <SwipableView
       simultaneousHandlers={simultaneousHandlers}
       onSwipeLeft={onRemove}
@@ -89,6 +94,8 @@ const TaskItem = (props: Props) => {
         px={4}
         py={2}
         bg={useColorModeValue('warmGray.50', 'primary.900')}
+        borderColor={!isActiveDrop ? useColorModeValue('warmGray.50', 'primary.900') : useColorModeValue('primary.900', 'warmGray.50') }
+        borderWidth={1}
       >
         <Box width={30} height={30} mr={2}>
           <Pressable onPress={onToggleCheckbox}>
@@ -97,6 +104,7 @@ const TaskItem = (props: Props) => {
               checkmarkColor={checkmarkColor}
               boxOutlineColor={boxStroke}
               checked={isDone}
+              
             />
           </Pressable>
         </Box>
@@ -114,7 +122,8 @@ const TaskItem = (props: Props) => {
             onBlur={onFinishEditing}
           />
         ) : (
-          <AnimatedTaskLabel
+          <>
+            <AnimatedTaskLabel
             textColor={activeTextColor}
             inactiveTextColor={doneTextColor}
             strikeThrough={isDone}
@@ -122,6 +131,38 @@ const TaskItem = (props: Props) => {
           >
             {subject}
           </AnimatedTaskLabel>
+          {
+            isActiveDrop ? (
+              <Box flexDirection={'row'}
+                borderRadius={100}
+                variant="outline"
+                borderColor={useColorModeValue('black', 'white')}
+                position={'absolute'}
+                right={3}
+          >
+          <Icon as={<Entypo name='align-bottom' />} size="sm"/>
+          <Icon as={<Entypo name='align-top' />} size="sm"/>
+          </Box>
+            ) : (
+              <IconButton
+            onPressOut={() =>  {
+              onLongPress && onLongPress()
+            }}
+            borderRadius={100}
+            variant="outline"
+            borderColor={useColorModeValue('black', 'white')}
+            position={'absolute'}
+            right={3}
+            _icon={{
+              as: MaterialIcons,
+              name: 'touch-app',
+              size: 3,
+              color: useColorModeValue('black', 'white')
+            }}
+          />
+            )
+          }
+          </>
         )}
       </HStack>
     </SwipableView>

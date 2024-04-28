@@ -4,7 +4,7 @@ const options ={
     backetSpacing: true,
     endOfLine: 'lf',
     semi: false,
-    tabWidth: 2,
+    tabWidth: 1,
     trailingComma: 'none'
   }
   module.exports = options
