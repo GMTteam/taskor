@@ -76,6 +76,9 @@ export const AnimatedTaskItem = (props: TaskItemProps) => {
   const handleRemove = useCallback(() => {
     onRemove(data)
   }, [data, onRemove])
+  const handleLongPress = useCallback(() => {
+    onLongPress && onLongPress()
+  }, [data,onLongPress])
   return (
     <StyledView
       w="full"
@@ -105,7 +108,7 @@ export const AnimatedTaskItem = (props: TaskItemProps) => {
         onFinishEditing={handleFinishEditing}
         onPressLabel={handlePressLabel}
         onRemove={handleRemove}
-        onLongPress={() => onLongPress && onLongPress()}
+        onLongPress={handleLongPress}
         isActiveDrop = {isActiveDrop}
       />
     </StyledView>

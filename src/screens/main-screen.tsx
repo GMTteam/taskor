@@ -25,15 +25,11 @@ export default function MainScreen() {
   const navigation = useNavigation<DrawerNavigationProp<any>>();
 
   useEffect(() => {
-    if (categories.length !== 0) {
-      if (!selectedCategory) {
+    if (categories && categories.length !== 0) {
         setSelectedCategory(categories[0])
         setData(categories[0].listTask)
-      }
-    } else {
-      setData([])
-    }
-  }, [categories])
+      } 
+  }, [])
 
   const handleToggleTaskItem = useCallback((item: { id: string; subject: string; done: boolean }) => {
     setData((prevData) => {

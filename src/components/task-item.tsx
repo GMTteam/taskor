@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback } from 'react'
 import { PanGestureHandlerProps } from 'react-native-gesture-handler'
 import { NativeSyntheticEvent, TextInputChangeEventData } from 'react-native'
 import {
