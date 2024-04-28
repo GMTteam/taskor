@@ -17,7 +17,7 @@ import {DrawerNavigationProp} from '@react-navigation/drawer'
 const StyledView = makeStyledComponent(View)
 export default function MainScreen() {
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
-  const { categories, addTaskToCategory, removeTaskFromCategory, updateDragAnđDrop } = useCategoryStore();
+  const { categories, addTaskToCategory, removeTaskFromCategory, updateDragAnđDrop, toggleTask } = useCategoryStore();
   const [data, setData] = useState<TaskItemData[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>();
   const flatListRef = useRef<FlatList>(null);
@@ -28,8 +28,13 @@ export default function MainScreen() {
     if (categories && categories.length !== 0) {
         setSelectedCategory(categories[0])
         setData(categories[0].listTask)
-      } 
+    } else {
+      setSelectedCategory(undefined)
+      setData([])
+    }
   }, [])
+
+
 
   const handleToggleTaskItem = useCallback((item: { id: string; subject: string; done: boolean }) => {
     setData((prevData) => {
@@ -41,6 +46,7 @@ export default function MainScreen() {
       };
       return newData;
     });
+    selectedCategory && toggleTask(selectedCategory?.id, {id : item.id, subject : item.subject, done : !item.done})
   }, []);
 
   const handleChangeTaskItemSubject = useCallback(

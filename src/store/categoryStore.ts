@@ -21,6 +21,7 @@ interface CategoryStoreState {
     removeCategory: (categoryId: string) => void
     addTaskToCategory: (categoryId: string, taskData: TaskItemData) => void
     removeTaskFromCategory: (categoryId: string, taskId: string) => void
+    toggleTask : (categoryId: string, taskData: TaskItemData) => void
     updateDragAnđDrop: (categoryId: string, newTaskList: TaskItemData[]) => void
     initializeStore: () => void
 }
@@ -68,7 +69,6 @@ const useCategoryStore = create<CategoryStoreState>(set => ({
             console.log("===addTaskToCategory===", updatedCategories)
             return { categories: updatedCategories }
         }),
-
     removeTaskFromCategory: (categoryId, taskId) =>
         set(state => {
             const updatedCategories = state.categories.map(category => {
@@ -87,6 +87,30 @@ const useCategoryStore = create<CategoryStoreState>(set => ({
             console.log("===removeTaskFromCategory===", updatedCategories)
             return { categories: updatedCategories }
         }),
+    toggleTask: (categoryId, taskData) => {
+        console.log("categoryId", categoryId)
+        console.log("taskData", taskData)
+        set(state => {
+            const updatedCategories = state.categories.map(category => {
+                if (category.id === categoryId) {
+                    const updatedTasks = category.listTask.map(task => {
+                        if (task.id === taskData.id) {
+                            return taskData
+                        }
+                        return task;
+                    });
+                    return {
+                        ...category,
+                        listTask: updatedTasks
+                    };
+                }
+                return category;
+            });
+            AsyncStorage.setItem(CATEGORY_KEY, JSON.stringify(updatedCategories))
+            console.log("===toggleTask===", updatedCategories)
+            return { categories: updatedCategories }
+        })
+    },
     updateDragAnđDrop: (categoryId, newTaskList) => {
         set(state => {
             const updatedCategories = state.categories.map(category => {
