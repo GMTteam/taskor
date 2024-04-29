@@ -10,3 +10,11 @@ export interface TaskItemData {
     subject: string
     done: boolean
 }
+
+
+export interface CategoryType {
+    id: string
+    name: string
+    listTask: TaskItemData[]
+}
+

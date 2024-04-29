@@ -1,19 +1,7 @@
 import { create } from 'zustand'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import shortid from 'shortid'
-
-
-export interface CategoryType {
-    id: string
-    name: string
-    listTask: TaskItemData[]
-}
-
-export interface TaskItemData {
-    id: string
-    subject: string
-    done: boolean
-}
+import { CategoryType, TaskItemData } from './types'
 
 interface CategoryStoreState {
     categories: CategoryType[]

@@ -7,8 +7,8 @@ import TaskList from '../components/task-list';
 import shortid from 'shortid';
 import Masthead from '../components/masthead';
 import NavBar from '../components/navbar';
-import useCategoryStore, { CategoryType } from '../store/categoryStore';
-import { CategoriesType, TaskItemData } from '../store/types';
+import useCategoryStore from '../store/categoryStore';
+import { CategoriesType, CategoryType, TaskItemData } from '../store/types';
 import { makeStyledComponent } from '../utils/styled';
 import { View } from 'moti'
 import { useNavigation } from '@react-navigation/native';
@@ -47,7 +47,7 @@ export default function MainScreen() {
       return newData;
     });
     selectedCategory && toggleTask(selectedCategory?.id, {id : item.id, subject : item.subject, done : !item.done})
-  }, []);
+  }, [selectedCategory]);
 
   const handleChangeTaskItemSubject = useCallback(
     (item: { id: string; subject: string; done: boolean }, newSubject: any) => {

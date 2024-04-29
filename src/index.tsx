@@ -8,14 +8,10 @@ import CategoriesScreen from './screens/categories-screen';
 const Drawer = createDrawerNavigator();
 
 const App = () => {
-  const CustomDrawerContent = (props: DrawerContentComponentProps) => {
-    return <Sidebar {...props} />;
-  };
-
   return (
     <Drawer.Navigator
       initialRouteName="Main"
-      drawerContent={CustomDrawerContent}
+      drawerContent={(props: DrawerContentComponentProps) => <Sidebar {...props} />}
       screenOptions={{
         headerShown: false,
         drawerType: 'back',
