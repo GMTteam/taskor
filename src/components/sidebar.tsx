@@ -27,6 +27,9 @@ const Sidebar = (props: DrawerContentComponentProps) => {
   const handlePressMenuAbout = useCallback(() => {
     navigation.navigate('About')
   }, [navigation])
+  const handlePressCategoryMain = useCallback(() => {
+    navigation.navigate('Category')
+  }, [navigation])
 
   return (
     <AnimatedColorBox
@@ -61,6 +64,13 @@ const Sidebar = (props: DrawerContentComponentProps) => {
         <Heading mb={4} size="xl">
           Shiva
         </Heading>
+        <MenuButton
+          active={currentRoute === 'Category'}
+          onPress={handlePressCategoryMain}
+          icon="target"
+        >
+          Categories
+        </MenuButton>
         <MenuButton
           active={currentRoute === 'Main'}
           onPress={handlePressMenuMain}

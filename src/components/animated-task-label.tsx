@@ -17,6 +17,7 @@ interface Props {
     inactiveTextColor: string;
     onPress?: () => void;
     children?: React.ReactNode;
+    onLongPress? : () => void
 }
 
 const AnimatedBox = Animated.createAnimatedComponent(Box)

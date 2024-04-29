@@ -83,7 +83,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.taskor"
+    namespace "com.anhtuatus.taskor"
     defaultConfig {
         applicationId 'com.anhtuatus.taskor'
         minSdkVersion rootProject.ext.minSdkVersion
