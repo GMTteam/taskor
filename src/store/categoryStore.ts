@@ -11,6 +11,7 @@ interface CategoryStoreState {
     removeTaskFromCategory: (categoryId: string, taskId: string) => void
     toggleTask : (categoryId: string, taskData: TaskItemData) => void
     updateDragAnđDrop: (categoryId: string, newTaskList: TaskItemData[]) => void
+    updateCategoriesOrder: (newOrder: CategoryType[]) => void;
     initializeStore: () => void
 }
 
@@ -41,6 +42,14 @@ const useCategoryStore = create<CategoryStoreState>(set => ({
             console.log("===removeCategory===", updatedCategories)
             return { categories: updatedCategories }
         }),
+
+    updateCategoriesOrder: (newOrder: CategoryType[]) => {
+        set(() => {
+            AsyncStorage.setItem(CATEGORY_KEY, JSON.stringify(newOrder));
+            return { categories: newOrder };
+        });
+        },
+        
 
     addTaskToCategory: (categoryId, taskData) =>
         set(state => {

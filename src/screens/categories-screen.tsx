@@ -1,25 +1,51 @@
-import React, { useCallback, useState } from 'react'
-import { Icon, VStack, useColorModeValue, Fab, FlatList } from 'native-base'
-import { AntDesign } from '@expo/vector-icons'
-import AnimatedColorBox from '../components/animated-color-box'
-import Masthead from '../components/masthead'
-import NavBar from '../components/navbar'
-import AddCategoryModal from '../components/add-category-modal'
-import CategoryItem from '../components/category-item'
+import React, { useState, useCallback, useRef } from 'react';
+import { Icon, VStack, useColorModeValue, Fab, IconButton } from 'native-base';
+import { AntDesign } from '@expo/vector-icons';
+import AnimatedColorBox from '../components/animated-color-box';
+import Masthead from '../components/masthead';
+import NavBar from '../components/navbar';
+import AddCategoryModal from '../components/add-category-modal';
+import CategoryItem from '../components/category-item';
 import { CategoriesType } from '../store/types';
-import useCategoryStore from '../store/categoryStore'
-import { useSetting } from '../contexts/settingContext'
-
+import useCategoryStore from '../store/categoryStore';
+import { useSetting } from '../contexts/settingContext';
+import {
+  NestableDraggableFlatList,
+  ScaleDecorator,
+  RenderItemParams,
+  NestableScrollContainer,
+} from 'react-native-draggable-flatlist';
 
 export default function CategoriesScreen() {
-  const [isShowModal, setIsShowModal] = useState(false)
-  const { categories, removeCategory}= useCategoryStore()
-  const { mastheadImage } = useSetting()
+  const [isShowModal, setIsShowModal] = useState(false);
+  const { categories, removeCategory, updateCategoriesOrder } = useCategoryStore();
+  const { mastheadImage } = useSetting();
+  const refScrollView = useRef(null);
 
-  const handleRemoveItem = (item : CategoriesType) => {
-    removeCategory(item.id)
-  }
-  const renderItem = (item : CategoriesType) => <CategoryItem item={item} onRemove={handleRemoveItem}/>; 
+  const handleRemoveItem = useCallback((item: CategoriesType) => {
+    removeCategory(item.id);
+  }, [removeCategory]);
+
+  const handleDragEnd = useCallback(({ data }) => {
+    updateCategoriesOrder(data);
+  }, [updateCategoriesOrder]);
+
+  const renderItem = useCallback(({ item, drag, isActive }: RenderItemParams<CategoriesType>) => {
+    return (
+      <ScaleDecorator
+        activeScale={1.1}
+      >
+        <CategoryItem
+          item={item}
+          onRemove={handleRemoveItem}
+          onLongPress={drag}
+          isActiveDrop={isActive}
+          simultaneousHandlers={refScrollView}
+        />
+      </ScaleDecorator>
+    );
+  }, [handleRemoveItem]);
+
   return (
     <AnimatedColorBox
       flex={1}
@@ -41,11 +67,14 @@ export default function CategoriesScreen() {
         borderTopRightRadius="20px"
         pt="20px"
       >
-        <FlatList
-          data={categories}
-          renderItem={({item}) =>renderItem(item) }
-          keyExtractor={(item) => item.id.toString()}
-        />
+        <NestableScrollContainer>
+          <NestableDraggableFlatList
+            data={categories}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            onDragEnd={handleDragEnd}
+          />
+        </NestableScrollContainer>
       </VStack>
       <Fab
         position="absolute"
@@ -56,7 +85,11 @@ export default function CategoriesScreen() {
         bg={useColorModeValue('blue.500', 'blue.400')}
         onPress={() => setIsShowModal(true)}
       />
-      <AddCategoryModal isVisible={isShowModal} header='Add New Category' onClose={() => setIsShowModal(false)} />
+      <AddCategoryModal
+        isVisible={isShowModal}
+        header="Add New Category"
+        onClose={() => setIsShowModal(false)}
+      />
     </AnimatedColorBox>
-  )
+  );
 }
