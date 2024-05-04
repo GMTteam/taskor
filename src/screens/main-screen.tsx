@@ -13,9 +13,12 @@ import { makeStyledComponent } from '../utils/styled';
 import { View } from 'moti'
 import { useNavigation } from '@react-navigation/native';
 import {DrawerNavigationProp} from '@react-navigation/drawer'
+import { useSetting } from '../contexts/settingContext';
 
 const StyledView = makeStyledComponent(View)
+
 export default function MainScreen() {
+  const { name, mastheadImage } = useSetting()
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const { categories, addTaskToCategory, removeTaskFromCategory, updateDragAnđDrop, toggleTask } = useCategoryStore();
   const [data, setData] = useState<TaskItemData[]>([]);
@@ -109,7 +112,9 @@ export default function MainScreen() {
   );
   return (
     <AnimatedColorBox flex={1} bg={useColorModeValue('warmGray.50', 'primary.900')} w="full">
-      <Masthead title="What's up, Shiva!" image={require('../assets/masthead.png')}>
+      <Masthead 
+        title={`What's up, ${name}!`} 
+        image={mastheadImage ? { uri: mastheadImage } : require('../assets/masthead.png')}>
         <NavBar />
       </Masthead>
       <VStack flex={1} bg={useColorModeValue('warmGray.50', 'primary.900')} mt="-20px" borderTopLeftRadius="20px" borderTopRightRadius="20px" pt="20px">

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback } from 'react';
 import {
   HStack,
   VStack,
@@ -6,30 +6,36 @@ import {
   Avatar,
   Heading,
   IconButton,
-  useColorModeValue
-} from 'native-base'
-import { DrawerContentComponentProps } from '@react-navigation/drawer'
-import AnimatedColorBox from './animated-color-box'
-import ThemeToggle from './theme-toggle'
-import { Feather } from '@expo/vector-icons'
-import MenuButton from './menu-button'
+  useColorModeValue,
+} from 'native-base';
+import { DrawerContentComponentProps } from '@react-navigation/drawer';
+import AnimatedColorBox from './animated-color-box';
+import ThemeToggle from './theme-toggle';
+import { Feather } from '@expo/vector-icons';
+import MenuButton from './menu-button';
+import { useSetting } from '../contexts/settingContext';
 
 const Sidebar = (props: DrawerContentComponentProps) => {
-  const { state, navigation } = props
-  const currentRoute = state.routeNames[state.index]
+  const { state, navigation } = props;
+  const currentRoute = state.routeNames[state.index];
+  const { name, profileImage } = useSetting();
 
   const handlePressBackButton = useCallback(() => {
-    navigation.closeDrawer()
-  }, [navigation])
+    navigation.closeDrawer();
+  }, [navigation]);
+
   const handlePressMenuMain = useCallback(() => {
-    navigation.navigate('Main')
-  }, [navigation])
+    navigation.navigate('Main');
+  }, [navigation]);
+
   const handlePressMenuAbout = useCallback(() => {
-    navigation.navigate('About')
-  }, [navigation])
+    navigation.navigate('Setting');
+  }, [navigation]);
+
   const handlePressCategoryMain = useCallback(() => {
-    navigation.navigate('Category')
-  }, [navigation])
+    navigation.navigate('Category');
+  }, [navigation]);
+  
 
   return (
     <AnimatedColorBox
@@ -49,12 +55,12 @@ const Sidebar = (props: DrawerContentComponentProps) => {
               as: Feather,
               name: 'chevron-left',
               size: 6,
-              color: useColorModeValue('blue.800', 'darkBlue.700')
+              color: useColorModeValue('blue.800', 'darkBlue.700'),
             }}
           />
         </HStack>
         <Avatar
-          source={require('../assets/profile-image.png')}
+          source={profileImage ? { uri: profileImage } : require('../assets/profile-image.png')}
           size="xl"
           borderRadius={100}
           mb={6}
@@ -62,8 +68,9 @@ const Sidebar = (props: DrawerContentComponentProps) => {
           borderWidth={3}
         />
         <Heading mb={4} size="xl">
-          Shiva
+          {name}
         </Heading>
+
         <MenuButton
           active={currentRoute === 'Category'}
           onPress={handlePressCategoryMain}
@@ -71,6 +78,7 @@ const Sidebar = (props: DrawerContentComponentProps) => {
         >
           Categories
         </MenuButton>
+        
         <MenuButton
           active={currentRoute === 'Main'}
           onPress={handlePressMenuMain}
@@ -78,19 +86,21 @@ const Sidebar = (props: DrawerContentComponentProps) => {
         >
           Tasks
         </MenuButton>
+        
         <MenuButton
-          active={currentRoute === 'About'}
+          active={currentRoute === 'Setting'}
           onPress={handlePressMenuAbout}
           icon="info"
         >
-          About
+          Settings
         </MenuButton>
       </VStack>
+      
       <Center>
         <ThemeToggle />
       </Center>
     </AnimatedColorBox>
-  )
-}
+  );
+};
 
-export default Sidebar
+export default Sidebar;

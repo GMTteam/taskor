@@ -1,7 +1,7 @@
 import React from 'react';
 import { DrawerContentComponentProps, createDrawerNavigator } from '@react-navigation/drawer';
 import MainScreen from './screens/main-screen';
-import AboutScreen from './screens/about-screen';
+import SettingScreen from './screens/setting-screen';
 import Sidebar from './components/sidebar';
 import CategoriesScreen from './screens/categories-screen';
 
@@ -19,7 +19,7 @@ const App = () => {
       }}
     >
       <Drawer.Screen name="Main" component={MainScreen} />
-      <Drawer.Screen name="About" component={AboutScreen} />
+      <Drawer.Screen name="Setting" component={SettingScreen} />
       <Drawer.Screen name="Category" component={CategoriesScreen} />
     </Drawer.Navigator>
   );

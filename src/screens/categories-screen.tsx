@@ -8,11 +8,13 @@ import AddCategoryModal from '../components/add-category-modal'
 import CategoryItem from '../components/category-item'
 import { CategoriesType } from '../store/types';
 import useCategoryStore from '../store/categoryStore'
+import { useSetting } from '../contexts/settingContext'
 
 
 export default function CategoriesScreen() {
   const [isShowModal, setIsShowModal] = useState(false)
-  const {categories, removeCategory}= useCategoryStore()
+  const { categories, removeCategory}= useCategoryStore()
+  const { mastheadImage } = useSetting()
 
   const handleRemoveItem = (item : CategoriesType) => {
     removeCategory(item.id)
@@ -25,8 +27,8 @@ export default function CategoriesScreen() {
       w="full"
     >
       <Masthead
-        title="Categories Screen"
-        image={require('../assets/masthead.png')}
+        title="Categories"
+        image={mastheadImage ? { uri: mastheadImage } : require('../assets/masthead.png')}
       >
         <NavBar />
       </Masthead>
