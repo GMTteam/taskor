@@ -13,12 +13,12 @@ import AnimatedColorBox from './animated-color-box';
 import ThemeToggle from './theme-toggle';
 import { Feather } from '@expo/vector-icons';
 import MenuButton from './menu-button';
-import { useSetting } from '../contexts/settingContext';
+import  useUserStore from '../store/userStore';
 
 const Sidebar = (props: DrawerContentComponentProps) => {
   const { state, navigation } = props;
   const currentRoute = state.routeNames[state.index];
-  const { name, profileImage } = useSetting();
+  const { name, avatarImage } = useUserStore();
 
   const handlePressBackButton = useCallback(() => {
     navigation.closeDrawer();
@@ -60,11 +60,11 @@ const Sidebar = (props: DrawerContentComponentProps) => {
           />
         </HStack>
         <Avatar
-          source={profileImage ? { uri: profileImage } : require('../assets/profile-image.png')}
+          source={avatarImage ? { uri: avatarImage } : require('../assets/profile-image.png')}
           size="xl"
           borderRadius={100}
           mb={6}
-          borderColor="secondary.500"
+          borderColor="secondary.600"
           borderWidth={3}
         />
         <Heading mb={4} size="xl">

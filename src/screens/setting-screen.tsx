@@ -18,61 +18,35 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import AnimatedColorBox from '../components/animated-color-box';
 import Navbar from '../components/navbar';
 import Masthead from '../components/masthead';
-import { useSetting } from '../contexts/settingContext';
+import useUserStore from '../store/userStore';
+import { color } from 'native-base/lib/typescript/theme/styled-system';
 
 const MASTHEAD_IMAGE_KEY = 'masthead_image';
-const PROFILE_IMAGE_KEY = 'profile_image';
+const AVATAR_IMAGE_KEY = 'avatar_image';
 const NAME_KEY = 'user_name';
 
 const SettingScreen = () => {
   const bgColor = useColorModeValue('warmGray.50', 'warmGray.900');
   const borderColor = useColorModeValue('warmGray.50', 'primary.900');
-  const { setName } = useSetting();
+  const { setName } = useUserStore();
   const [isModalOpen, setModalOpen] = useState(false);
   const [newName, setNewName] = useState('');
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [mastheadImage, setMastheadImage] = useState<string | null>(null);
+  const avatarImage = useUserStore((state) => state.avatarImage);
+  const setAvatarImage = useUserStore((state) => state.setAvatarImage);
+  const mastheadImage = useUserStore((state) => state.mastheadImage);
+  const setMastheadImage = useUserStore((state) => state.setMastheadImage);
+
+  const editButtonStyle = {
+    bg: 'darkblue.300',
+    borderColor: 'gray.800',
+    borderWidth: 0.8,
+    shadow: 6,
+    _pressed: {
+      bg: 'gray.150',
+      shadow: 0,
+    },
+  };
   
-  useEffect(() => {
-    const loadMastheadImage = async () => {
-      try {
-        const storedMastheadImage = await AsyncStorage.getItem(MASTHEAD_IMAGE_KEY);
-        if (storedMastheadImage) {
-          setMastheadImage(storedMastheadImage);
-        }
-      } catch (error) {
-        console.error('Failed to load masthead image from storage', error);
-      }
-    };
-
-    const loadProfileImage = async () => {
-      try {
-        const storedProfileImage = await AsyncStorage.getItem(PROFILE_IMAGE_KEY);
-        if (storedProfileImage) {
-          setSelectedImage(storedProfileImage);
-        }
-      } catch (error) {
-        console.error('Failed to load profile image from storage', error);
-      }
-    };
-
-    const loadUserName = async () => {
-      try {
-        const storedName = await AsyncStorage.getItem(NAME_KEY);
-        if (storedName) {
-          setNewName(storedName);
-          setName(storedName);
-        }
-      } catch (error) {
-        console.error('Failed to load user name from storage', error);
-      }
-    };
-
-    loadMastheadImage();
-    loadProfileImage();
-    loadUserName();
-  }, []);
-
   const handleSave = async () => {
     setName(newName);
     setModalOpen(false);
@@ -84,51 +58,50 @@ const SettingScreen = () => {
     }
   };
 
-  const handleEditMastheadImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [16, 9],
-      quality: 1,
-    });
+  const handleSelectImage = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+      });
 
-    if (!result.canceled) {
-      const imageUri = result.assets[0].uri;
-      setMastheadImage(imageUri);
-      try {
-        await AsyncStorage.setItem(MASTHEAD_IMAGE_KEY, imageUri);
-      } catch (error) {
-        console.error('Failed to save masthead image', error);
+      if (!result.canceled) {
+        const imageUri = result.assets[0];
+        setAvatarImage(imageUri.uri);
+        await AsyncStorage.setItem(AVATAR_IMAGE_KEY, imageUri.uri);
       }
+    } catch (error) {
+      console.error('Failed to pick avatar image', error);
     }
   };
 
-  const handleEditProfileImage = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    if (!result.canceled) { 
-      const imageUri = result.assets[0].uri; 
-      setSelectedImage(imageUri);
-      
+    const handleSelectMastheadImage = async () => {
       try {
-        await AsyncStorage.setItem(PROFILE_IMAGE_KEY, imageUri);
+        const result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          aspect: [16, 9],
+          quality: 1,
+        });
+  
+        if (!result.canceled) {
+          const imageUri = result.assets[0];
+          setMastheadImage(imageUri.uri);
+          await AsyncStorage.setItem(MASTHEAD_IMAGE_KEY, imageUri.uri);
+        }
       } catch (error) {
-        console.error('Failed to save profile image', error);
+        console.error('Failed to pick masthead image', error);
       }
-    }
-  };
+    };
+
+  
 
   return (
     <AnimatedColorBox flex={1} bg={bgColor} w="full">
       
       <Masthead
         title="Settings Yourself!"
-        image={mastheadImage ? { uri: mastheadImage } : require('../assets/masthead.png')}
+        image={mastheadImage ? {uri:mastheadImage} : require('../assets/masthead.png')}
       >
         <Navbar />
       </Masthead>
@@ -140,8 +113,9 @@ const SettingScreen = () => {
         borderRadius="full"
         bg="black"
         opacity={0.7}
-        onPress={handleEditMastheadImage}
+        onPress={handleSelectMastheadImage}
       />
+      
       <ScrollView
         borderTopLeftRadius="20px"
         borderTopRightRadius="20px"
@@ -154,7 +128,7 @@ const SettingScreen = () => {
           <Box alignItems="center">
             <Box position="relative">
               <Image
-                source={selectedImage ? { uri: selectedImage } : require('../assets/profile-image.png')}
+                source={avatarImage ? {uri: avatarImage} : require('../assets/profile-image.png')}
                 borderRadius="full"
                 resizeMode="cover"
                 w={120}
@@ -169,12 +143,14 @@ const SettingScreen = () => {
                 borderRadius="full"
                 bg="black"
                 opacity={0.8}
-                onPress={handleEditProfileImage}
+                onPress={handleSelectImage}
               />
             </Box>
           </Box>
 
-          <Button onPress={() => setModalOpen(true)}>Edit Name</Button>
+          <Button {...editButtonStyle} onPress={() => setModalOpen(true) }>
+            Edit Name
+          </Button>
 
           <Modal isOpen={isModalOpen} onClose={() => setModalOpen(false)}>
             <Modal.Content maxWidth="400px">
