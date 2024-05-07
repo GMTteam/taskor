@@ -8,7 +8,7 @@ import AddCategoryModal from '../components/add-category-modal';
 import CategoryItem from '../components/category-item';
 import { CategoriesType } from '../store/types';
 import useCategoryStore from '../store/categoryStore';
-import { useSetting } from '../contexts/settingContext';
+import useUserStore from '../store/userStore';
 import {
   NestableDraggableFlatList,
   ScaleDecorator,
@@ -19,7 +19,7 @@ import {
 export default function CategoriesScreen() {
   const [isShowModal, setIsShowModal] = useState(false);
   const { categories, removeCategory, updateCategoriesOrder } = useCategoryStore();
-  const { mastheadImage } = useSetting();
+  const { mastheadImage } = useUserStore();
   const refScrollView = useRef(null);
 
   const handleRemoveItem = useCallback((item: CategoriesType) => {
