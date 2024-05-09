@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react'
-import { PanGestureHandlerProps } from 'react-native-gesture-handler'
-import { NativeSyntheticEvent, TextInputChangeEventData } from 'react-native'
+import React, { useCallback, useState } from 'react';
+import { PanGestureHandlerProps } from 'react-native-gesture-handler';
+import { NativeSyntheticEvent, TextInputChangeEventData, Alert } from 'react-native';
 import {
   Pressable,
   Box,
@@ -9,28 +9,38 @@ import {
   Icon,
   Input,
   useToken,
-  IconButton
-} from 'native-base'
-import AnimatedCheckbox from 'react-native-checkbox-reanimated'
-import AnimatedTaskLabel from './animated-task-label'
-import SwipableView from './swipable-view'
-import { Feather, Entypo, MaterialIcons } from '@expo/vector-icons'
+  IconButton,
+  Text,
+  VStack,
+  Modal,
+  Button
+} from 'native-base';
+import AnimatedCheckbox from 'react-native-checkbox-reanimated';
+import AnimatedTaskLabel from './animated-task-label';
+import SwipableView from './swipable-view';
+import { Feather, Entypo, MaterialIcons } from '@expo/vector-icons';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import useAlarmStore from '../store/datetimeStore';
+import { ALERT_TYPE, Toast, Dialog ,AlertNotificationRoot } from 'react-native-alert-notification';
 
 interface Props extends Pick<PanGestureHandlerProps, 'simultaneousHandlers'> {
-  isEditing: boolean
-  isDone: boolean
-  onToggleCheckbox?: () => void
-  onPressLabel?: () => void
-  onRemove?: () => void
-  onChangeSubject?: (subject: string) => void
-  onFinishEditing?: () => void
-  onLongPress?: () => void
-  subject: string
-  isActiveDrop?: boolean
+  taskId: string;
+  isEditing: boolean;
+  isDone: boolean;
+  onToggleCheckbox?: () => void;
+  onPressLabel?: () => void;
+  onRemove?: () => void;
+  onChangeSubject?: (subject: string) => void;
+  onFinishEditing?: () => void;
+  onLongPress?: () => void;
+  subject: string;
+  isActiveDrop?: boolean;
+  onDeleteAlarm?: () => void;
 }
 
 const TaskItem = (props: Props) => {
   const {
+    taskId,
     isEditing,
     isDone,
     onToggleCheckbox,
@@ -42,37 +52,80 @@ const TaskItem = (props: Props) => {
     onLongPress,
     simultaneousHandlers,
     isActiveDrop
-  } = props
+  } = props;
+
   const highlightColor = useToken(
     'colors',
     useColorModeValue('blue.500', 'blue.400')
-  )
+  );
+
   const boxStroke = useToken(
     'colors',
     useColorModeValue('muted.300', 'muted.500')
-  )
+  );
 
-  const checkmarkColor = useToken('colors', useColorModeValue('black', 'white'))
+  const checkmarkColor = useToken('colors', useColorModeValue('black', 'white'));
 
   const doneTextColor = useToken(
     'colors',
     useColorModeValue('darkText', 'lightText')
-  )
+  );
+
   const activeTextColor = useToken(
     'colors',
     useColorModeValue('muted.400', 'muted.600')
-  )
+  );
+
+  
 
   const handleChangeSubject = useCallback(
     (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
-      onChangeSubject && onChangeSubject(e.nativeEvent.text)
+      onChangeSubject && onChangeSubject(e.nativeEvent.text);
     },
     [onChangeSubject]
-  )
+  );
+
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const { alarmTimes, setAlarmTime, deleteAlarmTime } = useAlarmStore();
+  const alarmTime = alarmTimes[taskId];
+
+  const backgroundColor = alarmTime ? 'rgba(255, 0, 0, 0.5)' : 'transparent';
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (time: Date) => {
+    const formattedTime = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    setAlarmTime(taskId, formattedTime);
+    hideDatePicker();
+    Toast.show({
+      type: ALERT_TYPE.SUCCESS,
+      title: 'Success',
+      textBody: `Alarm set to ${formattedTime}`,
+    })
+  };
+
+  const handleDeleteAlarm = () => {
+    deleteAlarmTime(taskId);
+    hideDatePicker();
+    if (props.onDeleteAlarm) {
+      props.onDeleteAlarm(); // Gọi hàm callback
+    }
+    Toast.show({
+      type: ALERT_TYPE.SUCCESS,
+      title: 'Success',
+      textBody: `Alarm has been deleted`,
+    })
+  };
 
   return (
-
     <SwipableView
+    
       simultaneousHandlers={simultaneousHandlers}
       onSwipeLeft={onRemove}
       backView={
@@ -104,7 +157,6 @@ const TaskItem = (props: Props) => {
               checkmarkColor={checkmarkColor}
               boxOutlineColor={boxStroke}
               checked={isDone}
-              
             />
           </Pressable>
         </Box>
@@ -124,49 +176,77 @@ const TaskItem = (props: Props) => {
         ) : (
           <>
             <AnimatedTaskLabel
-            textColor={activeTextColor}
-            inactiveTextColor={doneTextColor}
-            strikeThrough={isDone}
-            onPress={onPressLabel}
-          >
-            {subject}
-          </AnimatedTaskLabel>
-          {
-            isActiveDrop ? (
-              <Box flexDirection={'row'}
+              textColor={activeTextColor}
+              inactiveTextColor={doneTextColor}
+              strikeThrough={isDone}
+              onPress={onPressLabel}
+            >
+              {subject}
+            </AnimatedTaskLabel>
+            {isActiveDrop ? (
+              <Box
+                flexDirection={'row'}
                 borderRadius={100}
                 variant="outline"
                 borderColor={useColorModeValue('black', 'white')}
                 position={'absolute'}
                 right={3}
-          >
-          <Icon as={<Entypo name='align-bottom' />} size="sm"/>
-          <Icon as={<Entypo name='align-top' />} size="sm"/>
-          </Box>
+              >
+                <Icon as={<Entypo name='align-bottom' />} size="sm"/>
+                <Icon as={<Entypo name='align-top' />} size="sm"/>
+              </Box>
             ) : (
-              <IconButton
-            onPressOut={() =>  {
-              onLongPress && onLongPress()
-            }}
-            borderRadius={100}
-            variant="outline"
-            borderColor={useColorModeValue('black', 'white')}
-            position={'absolute'}
-            right={3}
-            _icon={{
-              as: MaterialIcons,
-              name: 'touch-app',
-              size: 3,
-              color: useColorModeValue('black', 'white')
-            }}
-          />
-            )
-          }
+              <>
+                <HStack position="absolute" right={3} space={2}>
+                  <IconButton
+                      onPressOut={showDatePicker}
+                      borderRadius={100}
+                      variant="outline"
+                      borderColor={useColorModeValue('black', 'white')}
+                      bg={backgroundColor}
+                      size={10}
+                    >
+                      <VStack alignItems="center">
+                        <Icon
+                          as={MaterialIcons}
+                          name="alarm"
+                          size={alarmTime ? 3 : 5}
+                          color={useColorModeValue('black', 'white')}
+                          mt={alarmTime ? -2 : -0.5}
+                        />
+                        {alarmTime && <Text fontSize="xs" mt={0} ml={-1.5} mr={-2}>{alarmTime}</Text>}
+                      </VStack>
+                    </IconButton>
+                      <DateTimePickerModal
+                        isVisible={isDatePickerVisible}
+                        mode="time"
+                        onConfirm={handleConfirm}
+                        onDelete={handleDeleteAlarm}
+                        onCancel={hideDatePicker}
+                      />
+                  <IconButton
+                    onPressOut={() => {
+                      onLongPress && onLongPress();
+                    }}
+                    borderRadius={100}
+                    variant="outline"
+                    borderColor={useColorModeValue('black', 'white')}
+                    _icon={{
+                      as: MaterialIcons,
+                      name: 'touch-app',
+                      size: 5,
+                      color: useColorModeValue('black', 'white')
+                    }}
+                  />
+                  
+                </HStack>
+              </>
+            )}
           </>
         )}
       </HStack>
     </SwipableView>
-  )
-}
+  );
+};
 
-export default TaskItem
+export default TaskItem;

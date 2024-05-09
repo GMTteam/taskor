@@ -3,6 +3,7 @@ import AppContainer from './src/components/app-container'
 import Navigator from './src/index'
 import useCategoryStore from './src/store/categoryStore'
 import useUserStore from './src/store/userStore'
+import useTaskAlarmStore from './src/store/datetimeStore'
 
 export default function App() {
 
@@ -15,6 +16,11 @@ export default function App() {
   useEffect(() => {
     initializeUserStore();
   }, [initializeUserStore])
+
+  const {initializeAlarmStore} = useTaskAlarmStore();
+  useEffect(() => {
+    initializeAlarmStore();
+  }, [])
 
   return (
     <AppContainer>

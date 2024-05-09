@@ -83,7 +83,7 @@ const CategoryItem = memo((props: Props) => {
                     _icon={{
                     as: MaterialIcons,
                     name: 'touch-app',
-                    size: 3,
+                    size: 4,
                     color: useColorModeValue('black', 'white')
                     }}
                 />

@@ -30,6 +30,8 @@ interface TaskListProps {
   onPressLabel: (item: TaskItemData) => void
   onRemoveItem: (item: TaskItemData) => void
   onUpdateItem: (item: TaskItemData[]) => void
+  onDeleteAlarm?: () => void
+  showAlarmDeletedToast?: () => void
 }
 
 interface TaskItemProps
@@ -43,6 +45,8 @@ interface TaskItemProps
   onRemove: (item: TaskItemData) => void
   onLongPress?: () => void
   isActiveDrop? : boolean
+  onDeleteAlarm?: () => void
+  showAlarmDeletedToast?: () => void
 }
 
 export const AnimatedTaskItem = (props: TaskItemProps) => {
@@ -56,7 +60,8 @@ export const AnimatedTaskItem = (props: TaskItemProps) => {
     onPressLabel,
     onRemove,
     onLongPress,
-    isActiveDrop
+    isActiveDrop,
+    showAlarmDeletedToast
   } = props
   const handleToggleCheckbox = useCallback(() => {
     onToggleItem(data)
@@ -99,6 +104,7 @@ export const AnimatedTaskItem = (props: TaskItemProps) => {
       }}
     >
       <TaskItem
+        taskId={data.id}
         simultaneousHandlers={simultaneousHandlers}
         subject={data.subject}
         isDone={data.done}
@@ -110,6 +116,7 @@ export const AnimatedTaskItem = (props: TaskItemProps) => {
         onRemove={handleRemove}
         onLongPress={handleLongPress}
         isActiveDrop = {isActiveDrop}
+        onDeleteAlarm={showAlarmDeletedToast}
       />
     </StyledView>
   )
@@ -124,13 +131,21 @@ export default function TaskList(props: TaskListProps) {
     onFinishEditing,
     onPressLabel,
     onRemoveItem,
-    onUpdateItem
+    onUpdateItem,
+    showAlarmDeletedToast
   } = props
   const refScrollView = useRef(null)
 
   const handleUpdateDragAndDrop = (newList : TaskItemData[]) => {
     onUpdateItem(newList)
   }
+
+  const handleDeleteAlarm = () => {
+    if (showAlarmDeletedToast) {
+      showAlarmDeletedToast(); // Gọi hàm Toast khi xoá báo thức
+    }
+  };
+
   const renderItem = ({ item, drag, isActive }: RenderItemParams<TaskItemData>) => {
     return (
       <ScaleDecorator
@@ -148,6 +163,7 @@ export default function TaskList(props: TaskListProps) {
             onRemove={() => {onRemoveItem(item)}}
             onLongPress={drag}
             isActiveDrop = {isActive}
+            onDeleteAlarm={handleDeleteAlarm}
         />
       </ScaleDecorator>
     );

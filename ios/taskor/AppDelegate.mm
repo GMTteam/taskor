@@ -14,6 +14,8 @@
   self.initialProps = @{};
 
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
+  // [UNUserNotificationCenter currentNotificationCenter].delegate = self;
+  // [[UIApplication sharedApplication] registerForRemoteNotifications];
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge

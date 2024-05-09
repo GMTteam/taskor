@@ -13,8 +13,8 @@ import { makeStyledComponent } from '../utils/styled';
 import { View } from 'moti'
 import { useNavigation } from '@react-navigation/native';
 import {DrawerNavigationProp} from '@react-navigation/drawer'
-import { useSetting } from '../contexts/settingContext';
 import useUserStore from '../store/userStore';
+import { Toast, AlertNotificationRoot, ALERT_TYPE } from 'react-native-alert-notification';
 
 const StyledView = makeStyledComponent(View)
 
@@ -98,6 +98,15 @@ export default function MainScreen() {
     },
     [categories]
   );
+
+  const showAlarmDeletedToast = useCallback(() => {
+    Toast.show({
+      type: ALERT_TYPE.SUCCESS,
+      title: 'Alarm Deleted',
+      textBody: 'The alarm has been deleted successfully.',
+    });
+  }, []);
+
   const renderItem = (item: CategoriesType, index: number) => (
     <Pressable key={item.id} onPress={() => handleCategorySelect(item, index)}>
       <Box
@@ -112,6 +121,7 @@ export default function MainScreen() {
     </Pressable>
   );
   return (
+    <AlertNotificationRoot>
     <AnimatedColorBox flex={1} bg={useColorModeValue('warmGray.50', 'primary.900')} w="full">
       <Masthead 
         title={`What's up, ${name}!`} 
@@ -165,6 +175,7 @@ export default function MainScreen() {
           onRemoveItem={handleRemoveItem}
           editingItemId={editingItemId}
           onUpdateItem={handleUpdateNewList}
+          showAlarmDeletedToast={showAlarmDeletedToast}
         />
       </VStack>
       <Fab
@@ -209,5 +220,6 @@ export default function MainScreen() {
         }}
       />
     </AnimatedColorBox>
+    </AlertNotificationRoot>
   );
 }
