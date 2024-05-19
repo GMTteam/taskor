@@ -2,13 +2,13 @@ import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface TaskAlarmStoreState {
-  alarmTimes: Record<string, string>; // Lưu thời gian báo thức theo ID của TaskItem
+  alarmTimes: Record<string, string>;
   setAlarmTime: (taskId: string, time: string) => void;
-  deleteAlarmTime: (taskId: string) => void; // Thêm chức năng xoá
+  deleteAlarmTime: (taskId: string) => void;
   initializeAlarmStore: () => void;
 }
 
-const ALARM_TIME_KEY = 'alarm_times'; // Key để lưu trữ thời gian báo thức
+const ALARM_TIME_KEY = 'alarm_times';
 
 const useTaskAlarmStore = create<TaskAlarmStoreState>((set) => ({
   alarmTimes: {},
@@ -16,18 +16,18 @@ const useTaskAlarmStore = create<TaskAlarmStoreState>((set) => ({
   setAlarmTime: (taskId: string, time: string) => {
     set((state) => {
       const newAlarmTimes = { ...state.alarmTimes, [taskId]: time };
-      AsyncStorage.setItem(ALARM_TIME_KEY, JSON.stringify(newAlarmTimes)); // Lưu vào AsyncStorage
+      AsyncStorage.setItem(ALARM_TIME_KEY, JSON.stringify(newAlarmTimes));
       return { alarmTimes: newAlarmTimes };
     });
   },
 
   deleteAlarmTime: (taskId: string) => {
     set((state) => {
-      // Tạo một bản sao của alarmTimes và xóa thời gian báo thức của taskId
+     
       const newAlarmTimes = { ...state.alarmTimes };
       delete newAlarmTimes[taskId];
 
-      // Lưu lại vào AsyncStorage
+     
       AsyncStorage.setItem(ALARM_TIME_KEY, JSON.stringify(newAlarmTimes));
 
       return { alarmTimes: newAlarmTimes };

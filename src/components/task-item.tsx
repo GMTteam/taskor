@@ -21,7 +21,7 @@ import SwipableView from './swipable-view';
 import { Feather, Entypo, MaterialIcons } from '@expo/vector-icons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import useAlarmStore from '../store/datetimeStore';
-import { ALERT_TYPE, Toast, Dialog ,AlertNotificationRoot } from 'react-native-alert-notification';
+// import { ALERT_TYPE, Dialog ,AlertNotificationRoot } from 'react-native-alert-notification';
 
 interface Props extends Pick<PanGestureHandlerProps, 'simultaneousHandlers'> {
   taskId: string;
@@ -103,24 +103,24 @@ const TaskItem = (props: Props) => {
     const formattedTime = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     setAlarmTime(taskId, formattedTime);
     hideDatePicker();
-    Toast.show({
-      type: ALERT_TYPE.SUCCESS,
-      title: 'Success',
-      textBody: `Alarm set to ${formattedTime}`,
-    })
+    // Toast.show({
+    //   type: ALERT_TYPE.SUCCESS,
+    //   title: 'Success',
+    //   textBody: `Alarm set to ${formattedTime}`,
+    // })
   };
 
   const handleDeleteAlarm = () => {
     deleteAlarmTime(taskId);
     hideDatePicker();
     if (props.onDeleteAlarm) {
-      props.onDeleteAlarm(); // Gọi hàm callback
+      props.onDeleteAlarm();
     }
-    Toast.show({
-      type: ALERT_TYPE.SUCCESS,
-      title: 'Success',
-      textBody: `Alarm has been deleted`,
-    })
+    // Toast.show({
+    //   type: ALERT_TYPE.SUCCESS,
+    //   title: 'Success',
+    //   textBody: `Alarm has been deleted`,
+    // })
   };
 
   return (

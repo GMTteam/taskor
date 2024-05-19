@@ -31,7 +31,7 @@ interface TaskListProps {
   onRemoveItem: (item: TaskItemData) => void
   onUpdateItem: (item: TaskItemData[]) => void
   onDeleteAlarm?: () => void
-  showAlarmDeletedToast?: () => void
+  // showAlarmDeletedToast?: () => void
 }
 
 interface TaskItemProps
@@ -46,7 +46,7 @@ interface TaskItemProps
   onLongPress?: () => void
   isActiveDrop? : boolean
   onDeleteAlarm?: () => void
-  showAlarmDeletedToast?: () => void
+  // showAlarmDeletedToast?: () => void
 }
 
 export const AnimatedTaskItem = (props: TaskItemProps) => {
@@ -61,7 +61,7 @@ export const AnimatedTaskItem = (props: TaskItemProps) => {
     onRemove,
     onLongPress,
     isActiveDrop,
-    showAlarmDeletedToast
+    // showAlarmDeletedToast
   } = props
   const handleToggleCheckbox = useCallback(() => {
     onToggleItem(data)
@@ -116,7 +116,7 @@ export const AnimatedTaskItem = (props: TaskItemProps) => {
         onRemove={handleRemove}
         onLongPress={handleLongPress}
         isActiveDrop = {isActiveDrop}
-        onDeleteAlarm={showAlarmDeletedToast}
+        // onDeleteAlarm={showAlarmDeletedToast}
       />
     </StyledView>
   )
@@ -132,7 +132,7 @@ export default function TaskList(props: TaskListProps) {
     onPressLabel,
     onRemoveItem,
     onUpdateItem,
-    showAlarmDeletedToast
+    // showAlarmDeletedToast
   } = props
   const refScrollView = useRef(null)
 
@@ -140,11 +140,11 @@ export default function TaskList(props: TaskListProps) {
     onUpdateItem(newList)
   }
 
-  const handleDeleteAlarm = () => {
-    if (showAlarmDeletedToast) {
-      showAlarmDeletedToast(); // Gọi hàm Toast khi xoá báo thức
-    }
-  };
+  // const handleDeleteAlarm = () => {
+  //   if (showAlarmDeletedToast) {
+  //     showAlarmDeletedToast();
+  //   }
+  // };
 
   const renderItem = ({ item, drag, isActive }: RenderItemParams<TaskItemData>) => {
     return (
@@ -163,7 +163,7 @@ export default function TaskList(props: TaskListProps) {
             onRemove={() => {onRemoveItem(item)}}
             onLongPress={drag}
             isActiveDrop = {isActive}
-            onDeleteAlarm={handleDeleteAlarm}
+            // onDeleteAlarm={handleDeleteAlarm}
         />
       </ScaleDecorator>
     );
