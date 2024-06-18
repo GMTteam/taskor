@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { PanGestureHandlerProps } from 'react-native-gesture-handler';
-import { NativeSyntheticEvent, TextInputChangeEventData, Alert } from 'react-native';
+import { NativeSyntheticEvent, TextInputChangeEventData, Alert, Platform } from 'react-native';
 import {
   Pressable,
   Box,
@@ -12,7 +12,6 @@ import {
   IconButton,
   Text,
   VStack,
-  Modal,
   Button
 } from 'native-base';
 import AnimatedCheckbox from 'react-native-checkbox-reanimated';
@@ -21,7 +20,7 @@ import SwipableView from './swipable-view';
 import { Feather, Entypo, MaterialIcons } from '@expo/vector-icons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import useAlarmStore from '../store/datetimeStore';
-// import { ALERT_TYPE, Dialog ,AlertNotificationRoot } from 'react-native-alert-notification';
+import * as Notifications from 'expo-notifications';
 
 interface Props extends Pick<PanGestureHandlerProps, 'simultaneousHandlers'> {
   taskId: string;
@@ -76,8 +75,6 @@ const TaskItem = (props: Props) => {
     useColorModeValue('muted.400', 'muted.600')
   );
 
-  
-
   const handleChangeSubject = useCallback(
     (e: NativeSyntheticEvent<TextInputChangeEventData>) => {
       onChangeSubject && onChangeSubject(e.nativeEvent.text);
@@ -91,6 +88,16 @@ const TaskItem = (props: Props) => {
 
   const backgroundColor = alarmTime ? 'rgba(255, 0, 0, 0.5)' : 'transparent';
 
+  useEffect(() => {
+    const getNotificationPermissions = async () => {
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission Denied', 'We need permission to send you notifications.');
+      }
+    };
+    getNotificationPermissions();
+  }, []);
+
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
@@ -99,15 +106,27 @@ const TaskItem = (props: Props) => {
     setDatePickerVisibility(false);
   };
 
+  const scheduleNotification = async (time: Date) => {
+    const trigger = new Date(time);
+    trigger.setSeconds(0); // Set seconds to 0 for more accurate timing
+
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Alarm",
+        body: `It's time for your task: ${subject}`,
+        sound: true,
+        priority: Notifications.AndroidNotificationPriority.HIGH,
+        vibrate: [0, 250, 250, 250],
+      },
+      trigger,
+    });
+  };
+
   const handleConfirm = (time: Date) => {
     const formattedTime = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     setAlarmTime(taskId, formattedTime);
     hideDatePicker();
-    // Toast.show({
-    //   type: ALERT_TYPE.SUCCESS,
-    //   title: 'Success',
-    //   textBody: `Alarm set to ${formattedTime}`,
-    // })
+    scheduleNotification(time);
   };
 
   const handleDeleteAlarm = () => {
@@ -116,16 +135,10 @@ const TaskItem = (props: Props) => {
     if (props.onDeleteAlarm) {
       props.onDeleteAlarm();
     }
-    // Toast.show({
-    //   type: ALERT_TYPE.SUCCESS,
-    //   title: 'Success',
-    //   textBody: `Alarm has been deleted`,
-    // })
   };
 
   return (
     <SwipableView
-    
       simultaneousHandlers={simultaneousHandlers}
       onSwipeLeft={onRemove}
       backView={
@@ -147,7 +160,7 @@ const TaskItem = (props: Props) => {
         px={4}
         py={2}
         bg={useColorModeValue('warmGray.50', 'primary.900')}
-        borderColor={!isActiveDrop ? useColorModeValue('warmGray.50', 'primary.900') : useColorModeValue('primary.900', 'warmGray.50') }
+        borderColor={!isActiveDrop ? useColorModeValue('warmGray.50', 'primary.900') : useColorModeValue('primary.900', 'warmGray.50')}
         borderWidth={1}
       >
         <Box width={30} height={30} mr={2}>
@@ -192,38 +205,38 @@ const TaskItem = (props: Props) => {
                 position={'absolute'}
                 right={3}
               >
-                <Icon as={<Entypo name='align-bottom' />} size="sm"/>
-                <Icon as={<Entypo name='align-top' />} size="sm"/>
+                <Icon as={<Entypo name='align-bottom' />} size="sm" />
+                <Icon as={<Entypo name='align-top' />} size="sm" />
               </Box>
             ) : (
               <>
                 <HStack position="absolute" right={3} space={2}>
                   <IconButton
-                      onPressOut={showDatePicker}
-                      borderRadius={100}
-                      variant="outline"
-                      borderColor={useColorModeValue('black', 'white')}
-                      bg={backgroundColor}
-                      size={10}
-                    >
-                      <VStack alignItems="center">
-                        <Icon
-                          as={MaterialIcons}
-                          name="alarm"
-                          size={alarmTime ? 3 : 5}
-                          color={useColorModeValue('black', 'white')}
-                          mt={alarmTime ? -2 : -0.5}
-                        />
-                        {alarmTime && <Text fontSize="xs" mt={0} ml={-1.5} mr={-2}>{alarmTime}</Text>}
-                      </VStack>
-                    </IconButton>
-                      <DateTimePickerModal
-                        isVisible={isDatePickerVisible}
-                        mode="time"
-                        onConfirm={handleConfirm}
-                        onDelete={handleDeleteAlarm}
-                        onCancel={hideDatePicker}
+                    onPressOut={showDatePicker}
+                    borderRadius={100}
+                    variant="outline"
+                    borderColor={useColorModeValue('black', 'white')}
+                    bg={backgroundColor}
+                    size={10}
+                  >
+                    <VStack alignItems="center">
+                      <Icon
+                        as={MaterialIcons}
+                        name="alarm"
+                        size={alarmTime ? 3 : 5}
+                        color={useColorModeValue('black', 'white')}
+                        mt={alarmTime ? -2 : -0.5}
                       />
+                      {alarmTime && <Text fontSize="xs" mt={0} ml={-1.5} mr={-2}>{alarmTime}</Text>}
+                    </VStack>
+                  </IconButton>
+                  <DateTimePickerModal
+                    isVisible={isDatePickerVisible}
+                    mode="time"
+                    onConfirm={handleConfirm}
+                    onDelete={handleDeleteAlarm}
+                    onCancel={hideDatePicker}
+                  />
                   <IconButton
                     onPressOut={() => {
                       onLongPress && onLongPress();
@@ -238,7 +251,6 @@ const TaskItem = (props: Props) => {
                       color: useColorModeValue('black', 'white')
                     }}
                   />
-                  
                 </HStack>
               </>
             )}
