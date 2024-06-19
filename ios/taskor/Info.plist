@@ -68,5 +68,9 @@
     <string>Light</string>
     <key>UIViewControllerBasedStatusBarAppearance</key>
     <false/>
+    <key>NSCalendarsUsageDescription</key>
+    <string>We need access to your calendar to set alarms.</string>
+    <key>NSRemindersUsageDescription</key>
+    <string>We need access to your reminders to set alarms.</string>
   </dict>
 </plist>

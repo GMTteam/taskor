@@ -21,6 +21,7 @@ import { Feather, Entypo, MaterialIcons } from '@expo/vector-icons';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import useAlarmStore from '../store/datetimeStore';
 import * as Notifications from 'expo-notifications';
+import * as Permissions from 'expo-permissions';
 
 interface Props extends Pick<PanGestureHandlerProps, 'simultaneousHandlers'> {
   taskId: string;
@@ -95,7 +96,16 @@ const TaskItem = (props: Props) => {
         Alert.alert('Permission Denied', 'We need permission to send you notifications.');
       }
     };
+    const requestCalendarPermissions = async () => {
+      if (Platform.OS === 'ios') {
+        const { status } = await Permissions.askAsync(Permissions.CALENDAR);
+        if (status !== 'granted') {
+          alert('Sorry, we need calendar permissions to make this work!');
+        }
+      }
+    };
     getNotificationPermissions();
+    requestCalendarPermissions();
   }, []);
 
   const showDatePicker = () => {
@@ -108,13 +118,13 @@ const TaskItem = (props: Props) => {
 
   const scheduleNotification = async (time: Date) => {
     const trigger = new Date(time);
-    trigger.setSeconds(0); // Set seconds to 0 for more accurate timing
+    trigger.setSeconds(0);
 
     await Notifications.scheduleNotificationAsync({
       content: {
         title: "Alarm",
         body: `It's time for your task: ${subject}`,
-        sound: true,
+        sound: 'assets/mixkit-long-pop-2358.wav',
         priority: Notifications.AndroidNotificationPriority.HIGH,
         vibrate: [0, 250, 250, 250],
       },
@@ -227,12 +237,13 @@ const TaskItem = (props: Props) => {
                         color={useColorModeValue('black', 'white')}
                         mt={alarmTime ? -2 : -0.5}
                       />
-                      {alarmTime && <Text fontSize="xs" mt={0} ml={-1.5} mr={-2}>{alarmTime}</Text>}
+                      {alarmTime && <Text fontSize="xs" mt={0} ml={-2} mr={-2}>{alarmTime}</Text>}
                     </VStack>
                   </IconButton>
                   <DateTimePickerModal
                     isVisible={isDatePickerVisible}
                     mode="time"
+                    textColor='black'
                     onConfirm={handleConfirm}
                     onDelete={handleDeleteAlarm}
                     onCancel={hideDatePicker}
