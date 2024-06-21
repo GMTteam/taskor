@@ -14,7 +14,6 @@ import {
   VStack,
   Button
 } from 'native-base';
-import AnimatedCheckbox from 'react-native-checkbox-reanimated';
 import AnimatedTaskLabel from './animated-task-label';
 import SwipableView from './swipable-view';
 import { Feather, Entypo, MaterialIcons } from '@expo/vector-icons';
@@ -22,6 +21,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import useAlarmStore from '../store/datetimeStore';
 import * as Notifications from 'expo-notifications';
 import * as Permissions from 'expo-permissions';
+import CustomCheckbox from './custom-checkbox';
 
 interface Props extends Pick<PanGestureHandlerProps, 'simultaneousHandlers'> {
   taskId: string;
@@ -88,25 +88,6 @@ const TaskItem = (props: Props) => {
   const alarmTime = alarmTimes[taskId];
 
   const backgroundColor = alarmTime ? 'rgba(255, 0, 0, 0.5)' : 'transparent';
-
-  useEffect(() => {
-    const getNotificationPermissions = async () => {
-      const { status } = await Notifications.requestPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Permission Denied', 'We need permission to send you notifications.');
-      }
-    };
-    const requestCalendarPermissions = async () => {
-      if (Platform.OS === 'ios') {
-        const { status } = await Permissions.askAsync(Permissions.CALENDAR);
-        if (status !== 'granted') {
-          alert('Sorry, we need calendar permissions to make this work!');
-        }
-      }
-    };
-    getNotificationPermissions();
-    requestCalendarPermissions();
-  }, []);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -175,12 +156,7 @@ const TaskItem = (props: Props) => {
       >
         <Box width={30} height={30} mr={2}>
           <Pressable onPress={onToggleCheckbox}>
-            <AnimatedCheckbox
-              highlightColor={highlightColor}
-              checkmarkColor={checkmarkColor}
-              boxOutlineColor={boxStroke}
-              checked={isDone}
-            />
+            <CustomCheckbox checked={isDone} onPress={onToggleCheckbox} />
           </Pressable>
         </Box>
         {isEditing ? (

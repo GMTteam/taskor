@@ -6841,11 +6841,6 @@ react-native-animatable@1.3.3:
   dependencies:
     prop-types "^15.7.2"
 
-react-native-checkbox-reanimated@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/react-native-checkbox-reanimated/-/react-native-checkbox-reanimated-0.1.0.tgz#d69257e662ecb3429df564a11fdef7d166de7aa2"
-  integrity sha512-WnUPXJ7v9V8HzSAEM9JXhZ7ezmTZK9z3u9IFoC4XHf3s97rjLvhdhYpSQjhdMaL0d2/RglaNwVHaf/IMHRVWqw==
-
 react-native-date-picker@^5.0.4:
   version "5.0.4"
   resolved "https://registry.yarnpkg.com/react-native-date-picker/-/react-native-date-picker-5.0.4.tgz#5965141617463bc11ebe0b16e2b0ea7239758e37"
