@@ -1,6 +1,6 @@
 import React from 'react'
 import { ImageSourcePropType } from 'react-native'
-import { Box, VStack, Heading, Image } from 'native-base'
+import { Box, VStack, Heading, Image, useColorModeValue } from 'native-base'
 
 interface Props {
   title: string
@@ -10,17 +10,18 @@ interface Props {
 
 const Masthead = ({ title, image, children }: Props) => {
   return (
-    <VStack h="300px" pb={5}>
+    <VStack h="240px" pb={5} background={useColorModeValue('warmGray.50', 'primary.900')}>
       <Image
         position="absolute"
         left={0}
         right={0}
-        bottom={0}
+        bottom={1}
         w="full"
-        h="300px"
+        h="240px"
         resizeMode="cover"
         source={image}
         alt="masthead image"
+        borderRadius={20}
       />
       {children}
       <Box flex={1} />

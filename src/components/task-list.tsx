@@ -12,8 +12,9 @@ import  {
   RenderItemParams,
   ScaleDecorator,
 } from "react-native-draggable-flatlist";
+import { border } from 'native-base/lib/typescript/theme/styled-system'
 const StyledView = makeStyledComponent(View)
-const StyledScrollView = makeStyledComponent(ScrollView)
+// const StyledScrollView = makeStyledComponent(ScrollView)
 
 interface TaskItemData {
   id: string
@@ -61,7 +62,6 @@ export const AnimatedTaskItem = (props: TaskItemProps) => {
     onRemove,
     onLongPress,
     isActiveDrop,
-    // showAlarmDeletedToast
   } = props
   const handleToggleCheckbox = useCallback(() => {
     onToggleItem(data)
@@ -91,6 +91,7 @@ export const AnimatedTaskItem = (props: TaskItemProps) => {
         opacity: 0,
         scale: 0.5,
         marginBottom: -46
+    
       }}
       animate={{
         opacity: 1,
@@ -116,7 +117,6 @@ export const AnimatedTaskItem = (props: TaskItemProps) => {
         onRemove={handleRemove}
         onLongPress={handleLongPress}
         isActiveDrop = {isActiveDrop}
-        // onDeleteAlarm={showAlarmDeletedToast}
       />
     </StyledView>
   )
@@ -132,19 +132,12 @@ export default function TaskList(props: TaskListProps) {
     onPressLabel,
     onRemoveItem,
     onUpdateItem,
-    // showAlarmDeletedToast
   } = props
   const refScrollView = useRef(null)
 
   const handleUpdateDragAndDrop = (newList : TaskItemData[]) => {
     onUpdateItem(newList)
   }
-
-  // const handleDeleteAlarm = () => {
-  //   if (showAlarmDeletedToast) {
-  //     showAlarmDeletedToast();
-  //   }
-  // };
 
   const renderItem = ({ item, drag, isActive }: RenderItemParams<TaskItemData>) => {
     return (
@@ -163,19 +156,19 @@ export default function TaskList(props: TaskListProps) {
             onRemove={() => {onRemoveItem(item)}}
             onLongPress={drag}
             isActiveDrop = {isActive}
-            // onDeleteAlarm={handleDeleteAlarm}
         />
       </ScaleDecorator>
     );
   };
   return (
-    <NestableScrollContainer>
-    <NestableDraggableFlatList
-    data={data}
-    onDragEnd={({ data }) => handleUpdateDragAndDrop(data)}
-    keyExtractor={(item) => item.id}
-    renderItem={renderItem}
-  />
+    <NestableScrollContainer style={{flex:1}}>
+      <NestableDraggableFlatList
+        data={data}
+        onDragEnd={({ data }) => handleUpdateDragAndDrop(data)}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        contentContainerStyle={{paddingBottom: 100}}
+      />
     </NestableScrollContainer>
   )
 }

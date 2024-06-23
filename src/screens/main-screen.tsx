@@ -19,7 +19,7 @@ import useUserStore from '../store/userStore';
 const StyledView = makeStyledComponent(View)
 
 export default function MainScreen() {
-  const { name, mastheadImage } = useUserStore()
+  // const { name, mastheadImage } = useUserStore()
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const { categories, addTaskToCategory, removeTaskFromCategory, updateDragAnđDrop, toggleTask } = useCategoryStore();
   const [data, setData] = useState<TaskItemData[]>([]);
@@ -114,17 +114,19 @@ export default function MainScreen() {
   );
   return (
     <AnimatedColorBox flex={1} bg={useColorModeValue('warmGray.50', 'primary.900')} w="full">
-      <Masthead 
+      {/* <Masthead 
+        tabs="Your Day"
         title={`What's up, ${name}!`} 
-        image={mastheadImage ? {uri: mastheadImage} : require('../assets/masthead.png')}>
+        image={mastheadImage ? {uri: mastheadImage} : require('../assets/masthead.png')}
+        >
         <NavBar />
-      </Masthead>
+      </Masthead> */}
       <VStack flex={1} bg={useColorModeValue('warmGray.50', 'primary.900')} mt="-20px" borderTopLeftRadius="20px" borderTopRightRadius="20px" pt="20px">
         <HStack paddingLeft={1.5} paddingRight={1.5}>
           <FlatList
             ref={flatListRef}
             horizontal
-            contentContainerStyle={{ width: 'auto' }}
+            contentContainerStyle={{ width: 'auto'}}
             showsHorizontalScrollIndicator={false}
             data={categories}
             renderItem={({ item, index }) => renderItem(item, index)}
@@ -149,9 +151,9 @@ export default function MainScreen() {
                 scale: 0.5,
               }}
             >
-              <Box alignSelf='center' background={'amber.400'} p={2} borderRadius={8} mt={3}>
+              {/* <Box alignSelf='center' background={'amber.400'} p={2} borderRadius={8} mt={3}>
                 <Text bold fontSize={18}>Tasks for {selectedCategory?.name}</Text>
-              </Box>
+              </Box> */}
             </StyledView>
           ) : <Box alignSelf='center' background={'amber.400'} p={2} borderRadius={8} mt={3}>
             <Text bold fontSize={18}>Add some task or category</Text>
