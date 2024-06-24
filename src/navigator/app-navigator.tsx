@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
-import MainScreenTabs from '../components/main-screen-tabs';
+import BottomMenuBar from '../components/bottom-menu-bar';
 import SettingScreen from '../screens/setting-screen';
 import Sidebar from '../components/sidebar';
 import CategoriesScreen from '../screens/categories-screen';
@@ -21,7 +21,7 @@ const MainDrawerNavigator = () => (
       overlayColor: '#00000000',
     }}
   >
-    <Drawer.Screen name="Main" component={MainScreenTabs} />
+    <Drawer.Screen name="Main" component={BottomMenuBar} />
     <Drawer.Screen name="Setting" component={SettingScreen} />
     <Drawer.Screen name="Category" component={CategoriesScreen} />
     <Drawer.Screen name="Calendar" component={CalendarScreen} />
