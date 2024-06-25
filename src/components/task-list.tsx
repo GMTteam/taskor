@@ -1,53 +1,50 @@
-import React, { useCallback, useRef } from 'react'
-import { AnimatePresence, View } from 'moti'
+import React, { useCallback, useRef } from 'react';
+import { View } from 'moti';
 import {
   PanGestureHandlerProps,
   ScrollView
-} from 'react-native-gesture-handler'
-import TaskItem from './task-item'
-import { makeStyledComponent } from '../utils/styled'
-import  {
+} from 'react-native-gesture-handler';
+import TaskItem from './task-item';
+import { makeStyledComponent } from '../utils/styled';
+import {
   NestableDraggableFlatList,
   NestableScrollContainer,
   RenderItemParams,
   ScaleDecorator,
 } from "react-native-draggable-flatlist";
-import { border } from 'native-base/lib/typescript/theme/styled-system'
-const StyledView = makeStyledComponent(View)
-// const StyledScrollView = makeStyledComponent(ScrollView)
+
+const StyledView = makeStyledComponent(View);
 
 interface TaskItemData {
-  id: string
-  subject: string
-  done: boolean
+  id: string;
+  subject: string;
+  done: boolean;
 }
 
 interface TaskListProps {
-  data: Array<TaskItemData>
-  editingItemId: string | null
-  onToggleItem: (item: TaskItemData) => void
-  onChangeSubject: (item: TaskItemData, newSubject: string) => void
-  onFinishEditing: (item: TaskItemData) => void
-  onPressLabel: (item: TaskItemData) => void
-  onRemoveItem: (item: TaskItemData) => void
-  onUpdateItem: (item: TaskItemData[]) => void
-  onDeleteAlarm?: () => void
-  // showAlarmDeletedToast?: () => void
+  data: Array<TaskItemData>;
+  editingItemId: string | null;
+  onToggleItem: (item: TaskItemData) => void;
+  onChangeSubject: (item: TaskItemData, newSubject: string) => void;
+  onFinishEditing: (item: TaskItemData) => void;
+  onPressLabel: (item: TaskItemData) => void;
+  onRemoveItem: (item: TaskItemData) => void;
+  onUpdateItem: (item: TaskItemData[]) => void;
+  onDeleteAlarm?: () => void;
 }
 
 interface TaskItemProps
   extends Pick<PanGestureHandlerProps, 'simultaneousHandlers'> {
-  data: TaskItemData
-  isEditing: boolean
-  onToggleItem: (item: TaskItemData) => void
-  onChangeSubject: (item: TaskItemData, newSubject: string) => void
-  onFinishEditing: (item: TaskItemData) => void
-  onPressLabel: (item: TaskItemData) => void
-  onRemove: (item: TaskItemData) => void
-  onLongPress?: () => void
-  isActiveDrop? : boolean
-  onDeleteAlarm?: () => void
-  // showAlarmDeletedToast?: () => void
+  data: TaskItemData;
+  isEditing: boolean;
+  onToggleItem: (item: TaskItemData) => void;
+  onChangeSubject: (item: TaskItemData, newSubject: string) => void;
+  onFinishEditing: (item: TaskItemData) => void;
+  onPressLabel: (item: TaskItemData) => void;
+  onRemove: (item: TaskItemData) => void;
+  onLongPress?: () => void;
+  isActiveDrop?: boolean;
+  onDeleteAlarm?: () => void;
 }
 
 export const AnimatedTaskItem = (props: TaskItemProps) => {
@@ -62,28 +59,35 @@ export const AnimatedTaskItem = (props: TaskItemProps) => {
     onRemove,
     onLongPress,
     isActiveDrop,
-  } = props
+  } = props;
+
   const handleToggleCheckbox = useCallback(() => {
-    onToggleItem(data)
-  }, [data, onToggleItem])
+    onToggleItem(data);
+  }, [data, onToggleItem]);
+
   const handleChangeSubject = useCallback(
     (subject: string) => {
-      onChangeSubject(data, subject)
+      onChangeSubject(data, subject);
     },
     [data, onChangeSubject]
-  )
+  );
+
   const handleFinishEditing = useCallback(() => {
-    onFinishEditing(data)
-  }, [data, onFinishEditing])
+    onFinishEditing(data);
+  }, [data, onFinishEditing]);
+
   const handlePressLabel = useCallback(() => {
-    onPressLabel(data)
-  }, [data, onPressLabel])
+    onPressLabel(data);
+  }, [data, onPressLabel]);
+
   const handleRemove = useCallback(() => {
-    onRemove(data)
-  }, [data, onRemove])
+    onRemove(data);
+  }, [data, onRemove]);
+
   const handleLongPress = useCallback(() => {
-    onLongPress && onLongPress()
-  }, [data,onLongPress])
+    onLongPress && onLongPress();
+  }, [data, onLongPress]);
+
   return (
     <StyledView
       w="full"
@@ -91,7 +95,6 @@ export const AnimatedTaskItem = (props: TaskItemProps) => {
         opacity: 0,
         scale: 0.5,
         marginBottom: -46
-    
       }}
       animate={{
         opacity: 1,
@@ -105,10 +108,8 @@ export const AnimatedTaskItem = (props: TaskItemProps) => {
       }}
     >
       <TaskItem
-        taskId={data.id}
+        task={data}
         simultaneousHandlers={simultaneousHandlers}
-        subject={data.subject}
-        isDone={data.done}
         isEditing={isEditing}
         onToggleCheckbox={handleToggleCheckbox}
         onChangeSubject={handleChangeSubject}
@@ -116,11 +117,11 @@ export const AnimatedTaskItem = (props: TaskItemProps) => {
         onPressLabel={handlePressLabel}
         onRemove={handleRemove}
         onLongPress={handleLongPress}
-        isActiveDrop = {isActiveDrop}
+        isActiveDrop={isActiveDrop}
       />
     </StyledView>
-  )
-}
+  );
+};
 
 export default function TaskList(props: TaskListProps) {
   const {
@@ -132,43 +133,43 @@ export default function TaskList(props: TaskListProps) {
     onPressLabel,
     onRemoveItem,
     onUpdateItem,
-  } = props
-  const refScrollView = useRef(null)
+  } = props;
 
-  const handleUpdateDragAndDrop = (newList : TaskItemData[]) => {
-    onUpdateItem(newList)
-  }
+  const refScrollView = useRef(null);
+
+  const handleUpdateDragAndDrop = (newList: TaskItemData[]) => {
+    onUpdateItem(newList);
+  };
 
   const renderItem = ({ item, drag, isActive }: RenderItemParams<TaskItemData>) => {
     return (
-      <ScaleDecorator
-        activeScale={1.1}
-      >
+      <ScaleDecorator activeScale={1.1}>
         <AnimatedTaskItem
-            key={item.id}
-            data={item}
-            simultaneousHandlers={refScrollView}
-            isEditing={item.id === editingItemId}
-            onToggleItem={onToggleItem}
-            onChangeSubject={onChangeSubject}
-            onFinishEditing={onFinishEditing}
-            onPressLabel={onPressLabel}
-            onRemove={() => {onRemoveItem(item)}}
-            onLongPress={drag}
-            isActiveDrop = {isActive}
+          key={item.id}
+          data={item}
+          simultaneousHandlers={refScrollView}
+          isEditing={item.id === editingItemId}
+          onToggleItem={onToggleItem}
+          onChangeSubject={onChangeSubject}
+          onFinishEditing={onFinishEditing}
+          onPressLabel={onPressLabel}
+          onRemove={() => { onRemoveItem(item); }}
+          onLongPress={drag}
+          isActiveDrop={isActive}
         />
       </ScaleDecorator>
     );
   };
+
   return (
-    <NestableScrollContainer style={{flex:1}}>
+    <NestableScrollContainer style={{ flex: 1 }}>
       <NestableDraggableFlatList
         data={data}
         onDragEnd={({ data }) => handleUpdateDragAndDrop(data)}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        contentContainerStyle={{paddingBottom: 100}}
+        contentContainerStyle={{ paddingBottom: 100 }}
       />
     </NestableScrollContainer>
-  )
+  );
 }

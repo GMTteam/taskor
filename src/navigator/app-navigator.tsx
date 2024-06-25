@@ -7,6 +7,7 @@ import Sidebar from '../components/sidebar';
 import CategoriesScreen from '../screens/categories-screen';
 import TaskListScreen from '../screens/tasks-list-screen';
 import CalendarScreen from '../screens/calendar-screen';
+import TaskDetailScreen from '../screens/tasks-detail-screen';
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -34,6 +35,15 @@ const AppNavigator = () => (
     <Stack.Screen
       name="TaskList"
       component={TaskListScreen}
+      options={{
+        headerShown: true,
+        headerBackTitleVisible: false,
+        presentation: 'modal',
+      }}
+    />
+    <Stack.Screen
+      name="TaskDetail"
+      component={TaskDetailScreen}
       options={{
         headerShown: true,
         headerBackTitleVisible: false,
