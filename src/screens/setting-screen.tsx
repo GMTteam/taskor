@@ -28,8 +28,8 @@ const AVATAR_IMAGE_KEY = 'avatar_image';
 const NAME_KEY = 'user_name';
 
 const SettingScreen = () => {
-  const bgColor = useColorModeValue('warmGray.50', 'warmGray.900');
-  const borderColor = useColorModeValue('warmGray.50', 'primary.900');
+  const bgColor = useColorModeValue('blueGray.200', 'warmGray.900');
+  const borderColor = useColorModeValue('blueGray.200', 'primary.900');
   const { setName } = useUserStore();
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -122,7 +122,7 @@ const SettingScreen = () => {
       <IconButton
         icon={<Icon as={Feather} name="camera" size="md" color="white" />}
         position="absolute"
-        top={230}
+        top={180}
         right={2}
         borderRadius="full"
         bg="black"

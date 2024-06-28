@@ -23,7 +23,7 @@ const TaskListScreen = () => {
 
   useEffect(() => {
     initializeTaskStore();
-    navigation.setOptions({ headerTitle: `${selectedDate}` });
+    navigation.setOptions({ headerTitle: `${selectedDate}`});
   }, [initializeTaskStore, navigation, selectedDate]);
 
   const handleRemoveTask = useCallback((task: string) => {
@@ -63,7 +63,7 @@ const TaskListScreen = () => {
 
   return (
     <AnimatedColorBox flex={1} bg={useColorModeValue('warmGray.50', 'primary.900')} w="full">
-      <View flex={1} p={4} mt={1}>
+      <View flex={1} p={4} mt={0} bg={'blueGray.200'}>
         {!isDetailViewVisible ? (
           <>
             <Text fontSize="lg" fontWeight="bold" mb={4}>
@@ -71,7 +71,7 @@ const TaskListScreen = () => {
             </Text>
             <FlatList
               data={tasks.get(selectedDate) || []}
-              renderItem={({ item }) => (
+              renderItem={({ item, index }) => (
                 <Pressable onPress={() => handleTaskPress(item)}>
                   {({ isPressed }) => (
                     <Box
@@ -91,12 +91,11 @@ const TaskListScreen = () => {
                       }}
                     >
                       <Text fontWeight="bold">{item.task}</Text>
-                      {/* {item.description ? <Text mt={2}>{item.description}</Text> : null} */}
                     </Box>
                   )}
                 </Pressable>
               )}
-              keyExtractor={(index) => index.toString()}
+              keyExtractor={(item, index) => `${selectedDate}-${index}`}
               ListEmptyComponent={<Text>No tasks for this day.</Text>}
             />
             <Fab
@@ -144,25 +143,13 @@ const TaskListScreen = () => {
                 <Text mb={4}>{selectedTask.description}</Text>
               </>
             )}
-            <View style={{ flex: 1, justifyContent: 'flex-end', paddingBottom: 20 }}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-              <Button
-                  onPress={handleBackToList}
-                  variant="unstyled"
-                >
-                  <Text style={{ color: 'blue', fontWeight: 'bold', fontSize: 18}}>
-                    Back
-                  </Text>
-                </Button>
-                <Button
-                  onPress={() => handleRemoveTask(selectedTask?.task || '')}
-                  variant="unstyled"
-                >
-                  <Text style={{ color: 'red', fontWeight: 'bold', fontSize: 18 }}>
-                    Delete
-                  </Text>
-                </Button>
-              </View>
+            <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+              <Button colorScheme="blue" mb={2} onPress={() => handleRemoveTask(selectedTask!.task)}>
+                Remove Task
+              </Button>
+              <Button colorScheme="gray" onPress={handleBackToList}>
+                Back to List
+              </Button>
             </View>
           </Animated.View>
         )}

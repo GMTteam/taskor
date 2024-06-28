@@ -58,7 +58,7 @@ const CustomCheckbox = ({ checked, onPress }) => {
             borderColor: 'gray',
             justifyContent: 'center',
             alignItems: 'center',
-            backgroundColor: checked ? 'blue' : 'transparent',
+            backgroundColor: checked ? 'green' : 'transparent',
           },
           borderStyle,
         ]}

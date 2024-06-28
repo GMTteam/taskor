@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, useColorModeValue, Pressable } from 'native-base';
+import { View, Text, useColorModeValue, Pressable, Image } from 'native-base';
 import { Calendar, DateData } from 'react-native-calendars';
 import AnimatedColorBox from '../components/animated-color-box';
 import useTaskStore from '../store/userTasksStore';
@@ -10,6 +10,11 @@ const CalendarScreen = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const navigation = useNavigation<CalendarScreenNavigationProp>();
   const { tasks, initializeTaskStore } = useTaskStore();
+
+  const textColor = useColorModeValue('black', 'white');
+  const bgColor = useColorModeValue('blueGray.200', 'primary.900');
+  const disabledTextColor = useColorModeValue('gray', 'darkgray');
+  const todayTextColor = useColorModeValue('red', 'lightpink');
 
   useEffect(() => {
     initializeTaskStore();
@@ -22,45 +27,65 @@ const CalendarScreen = () => {
 
   const markedDates = {};
   tasks.forEach((taskList, date) => {
+    const isToday = date === new Date().toISOString().split('T')[0];
     markedDates[date] = {
       marked: true,
       dotColor: 'blue',
       customStyles: {
         container: {
-          backgroundColor: selectedDate === date ? 'blue' : 'white',
+          backgroundColor: selectedDate === date ? 'blue' : 'transparent',
         },
         text: {
-          color: selectedDate === date ? 'white' : 'black',
+          color: selectedDate === date ? 'white' : (isToday ? todayTextColor : textColor),
         },
       },
     };
   });
 
   return (
-    <AnimatedColorBox flex={1} bg={useColorModeValue('warmGray.50', 'primary.900')} w="full">
+    <AnimatedColorBox flex={1} bg={bgColor} w="full">
       <View flex={1}>
         <Calendar
+          theme={{
+            calendarBackground: 'transparent',
+            textSectionTitleColor: "green",
+            dayTextColor: textColor,
+            todayTextColor: todayTextColor,
+            monthTextColor: "green",
+            textDisabledColor: disabledTextColor,
+            arrowColor: textColor,
+            indicatorColor: textColor,
+          }}
           onDayPress={onDayPress}
           markingType={'custom'}
           markedDates={markedDates}
           renderArrow={(direction) => (
-            <Text>{direction === 'left' ? '<' : '>'}</Text>
+            <Text style={{ color: textColor }}>{direction === 'left' ? '<' : '>'}</Text>
           )}
           dayComponent={({ date, state }) => {
             const dayTasks = tasks.get(date.dateString) || [];
+            const isToday = date.dateString === new Date().toISOString().split('T')[0];
             return (
-              <Pressable onPress={() => onDayPress(date)} key={date.dateString}>
-                <View style={{ alignItems: 'center' }}>
-                  <Text style={{ textAlign: 'center', color: state === 'disabled' ? 'gray' : 'black' }}>
+              <Pressable onPress={() => onDayPress(date)}>
+                <View style={{ alignItems: 'center', position: 'relative' }}>
+                  <Text style={{ textAlign: 'center', color: state === 'disabled' ? disabledTextColor : (isToday ? todayTextColor : textColor) }}>
                     {date.day}
                   </Text>
+                  {dayTasks.length > 0 && (
+                    <Image
+                      source={require('../assets/circle-mark.png')}
+                      alt="task indicator"
+                      size="xs"
+                      style={{ position: 'absolute', top: -2, right: 0, width: 40, height: 25 }}
+                    />
+                  )}
                   {dayTasks.slice(0, 3).map((task, index) => (
                     <Text key={`${date.dateString}-${index}`} style={{ fontSize: 10, color: 'gray' }}>
                       {task.task}
                     </Text>
                   ))}
                   {dayTasks.length > 3 && (
-                    <Text key={`${date.dateString}-more`} style={{ fontSize: 10, color: 'gray' }}>
+                    <Text style={{ fontSize: 10, color: 'gray' }}>
                       +{dayTasks.length - 3} more
                     </Text>
                   )}

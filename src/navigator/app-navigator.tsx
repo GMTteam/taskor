@@ -45,7 +45,7 @@ const AppNavigator = () => (
       name="TaskDetail"
       component={TaskDetailScreen}
       options={{
-        headerShown: true,
+        headerShown: false,
         headerBackTitleVisible: false,
         presentation: 'modal',
       }}

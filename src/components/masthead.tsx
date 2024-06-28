@@ -10,7 +10,7 @@ interface Props {
 
 const Masthead = ({ title, image, children }: Props) => {
   return (
-    <VStack h="240px" pb={5} background={useColorModeValue('warmGray.50', 'primary.900')}>
+    <VStack h="240px" pb={5} background={useColorModeValue('blueGray.200', 'primary.900')}>
       <Image
         position="absolute"
         left={0}

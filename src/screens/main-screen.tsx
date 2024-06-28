@@ -21,7 +21,7 @@ const StyledView = makeStyledComponent(View);
 
 export default function MainScreen() {
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
-  const { categories, addTaskToCategory, removeTaskFromCategory, updateDragAnđDrop, toggleTask } = useCategoryStore();
+  const { categories, addTaskToCategory, removeTaskFromCategory, updateDragAndDrop, toggleTask } = useCategoryStore();
   const { alarmTimes, setAlarmTime } = useAlarmStore();
   const [data, setData] = useState<TaskItemData[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<CategoryType>();
@@ -42,18 +42,19 @@ export default function MainScreen() {
     }
   }, [categories]);
 
-  const handleToggleTaskItem = useCallback((item: { id: string; subject: string; done: boolean }) => {
+  const handleToggleTaskItem = useCallback((item: TaskItemData) => {
     setData((prevData) => {
       const newData = [...prevData];
-      const index = prevData.indexOf(item);
+      const index = prevData.findIndex((i) => i.id === item.id);
       newData[index] = {
         ...item,
         done: !item.done,
       };
       return newData;
     });
-    selectedCategory && toggleTask(selectedCategory?.id, { id: item.id, subject: item.subject, done: !item.done });
+    selectedCategory && toggleTask(selectedCategory.id, { ...item, done: !item.done });
   }, [selectedCategory]);
+  
 
   const handleChangeTaskItemSubject = useCallback((item: { id: string; subject: string; done: boolean }, newSubject: any) => {
     setData((prevData) => {
@@ -86,7 +87,7 @@ export default function MainScreen() {
 
   const handleUpdateNewList = useCallback((newList: TaskItemData[]) => {
     setData(newList);
-    selectedCategory && updateDragAnđDrop(selectedCategory?.id, newList);
+    selectedCategory && updateDragAndDrop(selectedCategory?.id, newList);
   }, [selectedCategory]);
 
   const handleCategorySelect = useCallback((category: CategoriesType, index: number) => {
@@ -160,7 +161,7 @@ export default function MainScreen() {
 
   return (
     <AnimatedColorBox flex={1} bg={useColorModeValue('warmGray.50', 'primary.900')} w="full">
-      <VStack flex={1} bg={useColorModeValue('warmGray.50', 'primary.900')} mt="-20px" borderTopLeftRadius="20px" borderTopRightRadius="20px" pt="20px">
+      <VStack flex={1} bg={useColorModeValue('blueGray.200', 'primary.900')} mt="-20px" borderTopLeftRadius="20px" borderTopRightRadius="20px" pt="20px">
         <HStack paddingLeft={1.5} paddingRight={1.5}>
           <FlatList ref={flatListRef} horizontal contentContainerStyle={{ width: 'auto' }} showsHorizontalScrollIndicator={false} data={categories} renderItem={({ item, index }) => renderItem(item, index)} keyExtractor={(item) => item.id} />
         </HStack>

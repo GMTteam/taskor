@@ -53,7 +53,7 @@ const TaskItem = (props: Props) => {
     return null;
   }
 
-  const { id, subject, done } = task;
+  const { id, subject, done, priorityLevel } = task;
   const doneTextColor = useToken('colors', useColorModeValue('darkText', 'lightText'));
   const activeTextColor = useToken('colors', useColorModeValue('muted.400', 'muted.600'));
 
@@ -69,6 +69,21 @@ const TaskItem = (props: Props) => {
   
   const handlePressItem = () => {
     navigation.navigate('TaskDetail', { task });
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'I':
+        return 'red.500';
+      case 'II':
+        return 'yellow.500';
+      case 'III':
+        return 'blue.500';
+      case 'IV':
+        return 'green.500';
+      default:
+        return 'gray.500';
+    }
   };
 
   return (
@@ -94,13 +109,31 @@ const TaskItem = (props: Props) => {
           w="full"
           px={4}
           py={2}
-          bg={useColorModeValue('warmGray.50', 'primary.900')}
+          bg={useColorModeValue('blueGray.200', 'primary.900')}
           borderColor={!isActiveDrop ? useColorModeValue('warmGray.50', 'primary.900') : useColorModeValue('primary.900', 'warmGray.50')}
           shadow={!isActiveDrop ? -1 : 6}
         >
           <Box width={30} height={30} mr={2}>
             <Pressable onPress={onToggleCheckbox}>
               <CustomCheckbox checked={done} onPress={onToggleCheckbox} />
+              {priorityLevel && (
+                      <Box
+                        borderWidth={2}
+                        borderColor={getPriorityColor(priorityLevel)}
+                        borderRadius="full"
+                        p={0}
+                        alignItems="center"
+                        justifyContent="center"
+                        width={30}
+                        height={30}
+                        mt={-9}
+                        ml={6}
+                        size={4}
+                        bgColor={getPriorityColor(priorityLevel)}
+                      >
+                        <Text color="white" fontSize={9}>{priorityLevel}</Text>
+                      </Box>
+                    )}
             </Pressable>
           </Box>
           {isEditing ? (
@@ -124,8 +157,10 @@ const TaskItem = (props: Props) => {
                 strikeThrough={done}
                 onPress={onPressLabel}
               >
+                
                 {subject}
               </AnimatedTaskLabel>
+                
               {isActiveDrop ? (
                 <Box
                   flexDirection={'row'}
@@ -140,19 +175,19 @@ const TaskItem = (props: Props) => {
                 </Box>
               ) : (
                 <>
-                  <HStack position="absolute" right={3} space={2}>
+                  <HStack position="absolute" right={3} space={2} alignItems="center">
                     {alarmTime && (
                       <VStack alignItems="center" marginRight={3} marginTop={1}>
-                      <Icon
-                        as={MaterialIcons}
-                        name="alarm"
-                        size={alarmTime ? 4 : 5}
-                        color="red.600"
-                        mt={alarmTime ? -0 : 2.5}
-                      />
-                      {alarmTime && <Text fontSize="xs" mt={0} ml={-2} mr={-2}>{alarmTime}</Text>}
-                    </VStack>
-                    )}    
+                        <Icon
+                          as={MaterialIcons}
+                          name="alarm"
+                          size={alarmTime ? 4 : 5}
+                          color="red.600"
+                          mt={alarmTime ? 0 : 2.5}
+                        />
+                        {alarmTime && <Text fontSize="xs" mt={0} ml={-2} mr={-2}>{alarmTime}</Text>}
+                      </VStack>
+                    )}
                     <IconButton
                       onPressOut={() => {
                         onLongPress && onLongPress();

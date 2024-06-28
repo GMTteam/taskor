@@ -36,6 +36,7 @@ export interface TaskItemData {
   id: string;
   subject: string;
   description?: string;
+  priorityLevel?: string;
   done: boolean;
 }
 
