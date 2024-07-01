@@ -77,15 +77,15 @@ const CategoryItem = memo((props: Props) => {
                     onLongPress && onLongPress()
                     }}
                     borderRadius={100}
-                    variant="outline"
+                    variant="transparent"
                     borderColor={useColorModeValue('black', 'white')}
                     position={'absolute'}
                     right={3}
                     _icon={{
                     as: MaterialIcons,
-                    name: 'touch-app',
+                    name: 'dehaze',
                     size: 4,
-                    color: useColorModeValue('black', 'white')
+                    color: useColorModeValue('gray.400', 'white')
                     }}
                 />
                     )

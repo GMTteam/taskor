@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, Text, FlatList, Button, useColorModeValue, Fab, Modal, Icon, Input, Box, Pressable } from 'native-base';
-import { AntDesign } from '@expo/vector-icons';
+import { View, Text, FlatList, Button, useColorModeValue, Fab, Modal, Icon, Input, Box, Pressable, VStack, IconButton, HStack } from 'native-base';
+import { AntDesign, Feather } from '@expo/vector-icons';
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { Dimensions, Animated } from 'react-native';
 import useTaskStore from '../store/userTasksStore';
@@ -13,11 +13,12 @@ const TaskListScreen = () => {
   const navigation = useNavigation();
   const { selectedDate } = route.params;
   const [modalVisible, setModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
   const [newTask, setNewTask] = useState('');
   const [newTaskDescription, setNewTaskDescription] = useState('');
   const [selectedTask, setSelectedTask] = useState<{ task: string; description?: string } | null>(null);
   const [isDetailViewVisible, setIsDetailViewVisible] = useState(false);
-  const { tasks, addTask, initializeTaskStore, removeTask } = useTaskStore();
+  const { tasks, addTask, initializeTaskStore, removeTask, updateTask } = useTaskStore();
   const screenWidth = Dimensions.get('window').width;
   const detailViewAnimated = useRef(new Animated.Value(screenWidth)).current;
 
@@ -40,8 +41,18 @@ const TaskListScreen = () => {
     }
   }, [newTask, newTaskDescription, addTask, selectedDate]);
 
+  const handleEditTask = useCallback(() => {
+    if (selectedTask) {
+      updateTask(selectedDate, selectedTask.task, newTask, newTaskDescription);
+      setSelectedTask({ task: newTask, description: newTaskDescription });
+      setEditModalVisible(false);
+    }
+  }, [selectedDate, selectedTask, newTask, newTaskDescription, updateTask]);
+
   const handleTaskPress = useCallback((task) => {
     setSelectedTask(task);
+    setNewTask(task.task);
+    setNewTaskDescription(task.description || '');
     setIsDetailViewVisible(true);
     Animated.timing(detailViewAnimated, {
       toValue: 0,
@@ -132,9 +143,15 @@ const TaskListScreen = () => {
           </>
         ) : (
           <Animated.View style={{ transform: [{ translateX: detailViewAnimated }], flex: 1 }}>
-            <Text fontSize="lg" fontWeight="bold" mb={4}>
-              Task Detail
-            </Text>
+            <HStack justifyContent="space-between">
+              <Text fontSize="lg" fontWeight="bold" mb={4}>
+                Task Detail
+              </Text>
+              <IconButton 
+                icon={<Icon as={Feather} name="edit" size="md" />}
+                onPress={() => setEditModalVisible(true)}
+              />
+            </HStack>
             <Text fontWeight="bold">Task:</Text>
             <Text mb={4}>{selectedTask?.task}</Text>
             {selectedTask?.description && (
@@ -151,6 +168,28 @@ const TaskListScreen = () => {
                 Back to List
               </Button>
             </View>
+            <Modal isOpen={editModalVisible} onClose={() => setEditModalVisible(false)}>
+              <Modal.Content>
+                <Modal.CloseButton />
+                <Modal.Header>Edit Task</Modal.Header>
+                <Modal.Body>
+                  <Input
+                    placeholder="Edit task"
+                    value={newTask}
+                    onChangeText={setNewTask}
+                    mb={2}
+                  />
+                  <Input
+                    placeholder="Edit description (optional)"
+                    value={newTaskDescription}
+                    onChangeText={setNewTaskDescription}
+                  />
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button onPress={handleEditTask}>Save</Button>
+                </Modal.Footer>
+              </Modal.Content>
+            </Modal>
           </Animated.View>
         )}
       </View>

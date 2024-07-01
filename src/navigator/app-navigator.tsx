@@ -7,6 +7,7 @@ import Sidebar from '../components/sidebar';
 import CategoriesScreen from '../screens/categories-screen';
 import TaskListScreen from '../screens/tasks-list-screen';
 import CalendarScreen from '../screens/calendar-screen';
+import TimelineScreen from '../screens/timeline-screen';
 import TaskDetailScreen from '../screens/tasks-detail-screen';
 
 const Drawer = createDrawerNavigator();
@@ -26,6 +27,7 @@ const MainDrawerNavigator = () => (
     <Drawer.Screen name="Setting" component={SettingScreen} />
     <Drawer.Screen name="Category" component={CategoriesScreen} />
     <Drawer.Screen name="Calendar" component={CalendarScreen} />
+    <Drawer.Screen name="Timeline" component={TimelineScreen} />
   </Drawer.Navigator>
 );
 

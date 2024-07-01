@@ -37,6 +37,7 @@ export interface TaskItemData {
   subject: string;
   description?: string;
   priorityLevel?: string;
+  alarmTime?: string;
   done: boolean;
 }
 

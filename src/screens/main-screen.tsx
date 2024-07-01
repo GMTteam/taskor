@@ -54,7 +54,6 @@ export default function MainScreen() {
     });
     selectedCategory && toggleTask(selectedCategory.id, { ...item, done: !item.done });
   }, [selectedCategory]);
-  
 
   const handleChangeTaskItemSubject = useCallback((item: { id: string; subject: string; done: boolean }, newSubject: any) => {
     setData((prevData) => {

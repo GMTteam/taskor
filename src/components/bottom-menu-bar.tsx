@@ -4,6 +4,7 @@ import { Animated } from 'react-native';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import MainScreen from '../screens/main-screen';
 import CalendarScreen from '../screens/calendar-screen';
+import TimelineScreen from '../screens/timeline-screen';
 import Masthead from './masthead';
 import NavBar from './navbar';
 import useUserStore from '../store/userStore';
@@ -19,9 +20,10 @@ const BottomMenuBar = () => {
 
   const yourDayScale = useRef(new Animated.Value(1)).current;
   const calendarScale = useRef(new Animated.Value(1)).current;
+  const timelineScale = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    const animateIcon = (focusedTab, otherTab) => {
+    const animateIcon = (focusedTab, otherTab, otherTab1) => {
       Animated.parallel([
         Animated.timing(otherTab, {
           toValue: 1,
@@ -32,16 +34,23 @@ const BottomMenuBar = () => {
           toValue: 1.5,
           duration: 300,
           useNativeDriver: true,
-        })
+        }),
+        Animated.timing(otherTab1, {
+          toValue: 1,
+          duration: 300,
+          useNativeDriver: true,
+        }),
       ]).start();
     };
 
     if (currentTab === 'Your Day') {
-      animateIcon(yourDayScale, calendarScale);
+      animateIcon(yourDayScale, calendarScale, timelineScale);
+    } else if (currentTab === 'Calendar'){
+      animateIcon(calendarScale, yourDayScale, timelineScale);
     } else {
-      animateIcon(calendarScale, yourDayScale);
+      animateIcon(timelineScale, yourDayScale, calendarScale);
     }
-  }, [currentTab, yourDayScale, calendarScale]);
+  }, [currentTab, yourDayScale, calendarScale, timelineScale]);
 
   return (
     <>
@@ -59,7 +68,7 @@ const BottomMenuBar = () => {
               scale = yourDayScale;
               return (
                 <AnimatedAntDesign
-                  name="home"
+                  name="checkcircleo"
                   size={size}
                   color={color}
                   style={{ transform: [{ scale }] }}
@@ -70,6 +79,16 @@ const BottomMenuBar = () => {
               return (
                 <AnimatedMaterialIcons
                   name="calendar-today"
+                  size={size}
+                  color={color}
+                  style={{ transform: [{ scale }] }}
+                />
+              );
+            } else if (route.name === 'Timeline') {
+              scale = timelineScale;
+              return (
+                <AnimatedMaterialIcons
+                  name="list"
                   size={size}
                   color={color}
                   style={{ transform: [{ scale }] }}
@@ -95,7 +114,8 @@ const BottomMenuBar = () => {
             setCurrentTab(tabName);
           }
         }}
-      >
+      > 
+        <Tab.Screen name="Timeline" component={TimelineScreen} />
         <Tab.Screen name="Your Day" component={MainScreen} />
         <Tab.Screen name="Calendar" component={CalendarScreen} />
       </Tab.Navigator>

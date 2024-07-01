@@ -4,12 +4,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 interface Task {
   task: string;
   description?: string;
+  alarmTime?: string;
 }
 
 interface TaskStoreState {
   tasks: Map<string, Task[]>;
-  addTask: (date: string, task: string, description?: string) => void;
+  addTask: (date: string, task: string, description?: string, alarmTime?: string) => void;
   removeTask: (date: string, task: string) => void;
+  updateTask: (date: string, oldTask: string, newTask: string, newDescription?: string, newAlarmTime?: string) => void;
   initializeTaskStore: () => void;
 }
 
@@ -26,11 +28,11 @@ const saveTasksToStorage = async (tasks: Map<string, Task[]>) => {
 const userTasksStore = create<TaskStoreState>((set) => ({
   tasks: new Map(),
 
-  addTask: (date: string, task: string, description?: string) => {
+  addTask: (date: string, task: string, description?: string, alarmTime?: string) => {
     set((state) => {
       const newTasks = new Map(state.tasks);
       const dateTasks = newTasks.get(date) || [];
-      newTasks.set(date, [...dateTasks, { task, description }]);
+      newTasks.set(date, [...dateTasks, { task, description, alarmTime }]);
       saveTasksToStorage(newTasks);
       return { tasks: newTasks };
     });
@@ -41,6 +43,20 @@ const userTasksStore = create<TaskStoreState>((set) => ({
       const newTasks = new Map(state.tasks);
       const dateTasks = newTasks.get(date) || [];
       newTasks.set(date, dateTasks.filter(t => t.task !== task));
+      saveTasksToStorage(newTasks);
+      return { tasks: newTasks };
+    });
+  },
+
+  updateTask: (date: string, oldTask: string, newTask: string, newDescription?: string, newAlarmTime?: string) => {
+    set((state) => {
+      const newTasks = new Map(state.tasks);
+      const dateTasks = newTasks.get(date) || [];
+      const taskIndex = dateTasks.findIndex(t => t.task === oldTask);
+      if (taskIndex > -1) {
+        dateTasks[taskIndex] = { task: newTask, description: newDescription, alarmTime: newAlarmTime };
+        newTasks.set(date, [...dateTasks]);
+      }
       saveTasksToStorage(newTasks);
       return { tasks: newTasks };
     });
