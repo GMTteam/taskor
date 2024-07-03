@@ -150,14 +150,14 @@ const TaskDetailScreen = () => {
             </Text>
           </>
         )}
-        <VStack backgroundColor="gray.200" borderRadius={10} mt={6}>
-          <HStack alignItems="center" justifyContent="space-between" borderBottomWidth={1} borderBottomColor="gray.300">
+        <VStack backgroundColor={useColorModeValue("gray.200", "gray.500")} borderRadius={10} mt={6}>
+          <HStack alignItems="center" justifyContent="space-between" borderBottomWidth={1} borderBottomColor={useColorModeValue("gray.300", "gray.400")} ml={2} mr={2}>
             {alarmTime ? (
               <Button ml={2} mt={2} onPress={handleDeleteAlarm} size="sm" background="transparent">
                 <Text mb={2} color="red.600">Delete Alarm</Text>
               </Button>
             ) : (
-              <Button mt="2" ml={2} onPress={showDatePicker} size="sm" background="transparent" >
+              <Button mt="2" onPress={showDatePicker} size="sm" background="transparent" >
                 <Text mb={2} >Set Alarm</Text>
               </Button>
             )}
@@ -168,7 +168,7 @@ const TaskDetailScreen = () => {
               </Text>
               ) : (
                 <Icon mt="1" ml={5} as={MaterialIcons} name="alarm" size="md" onPress={showDatePicker}/>
-              )}
+              )}    
             </HStack>
           </HStack>
           <HStack justifyContent="space-between" alignItems="center">
@@ -212,7 +212,7 @@ const TaskDetailScreen = () => {
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
       />
-      <Button onPress={handleSave} mt={350} bg="gray.300"  borderRadius={8}>
+      <Button onPress={handleSave} mt={350} bg={useColorModeValue("gray.300", "gray.500")}  borderRadius={8}>
         <Text>Save</Text>
       </Button>
     </Box>

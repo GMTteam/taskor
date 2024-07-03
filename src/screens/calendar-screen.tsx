@@ -80,7 +80,7 @@ const CalendarScreen = () => {
                     />
                   )}
                   {dayTasks.slice(0, 3).map((task, index) => (
-                    <Text key={`${date.dateString}-${index}`} style={{ fontSize: 10, color: 'gray' }}>
+                    <Text key={`${date.dateString}-${index}`} style={{ fontSize: 11, color: 'gray' }}>
                       {task.task}
                     </Text>
                   ))}

@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
+import { useColorModeValue } from 'native-base';
 import BottomMenuBar from '../components/bottom-menu-bar';
 import SettingScreen from '../screens/setting-screen';
 import Sidebar from '../components/sidebar';
@@ -41,6 +42,9 @@ const AppNavigator = () => (
         headerShown: true,
         headerBackTitleVisible: false,
         presentation: 'modal',
+        headerStyle: {
+          backgroundColor: useColorModeValue("white", 'gray'),
+        },
       }}
     />
     <Stack.Screen
