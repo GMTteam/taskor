@@ -5,12 +5,10 @@ import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import AnimatedColorBox from '../components/animated-color-box';
 import TaskList from '../components/task-list';
 import shortid from 'shortid';
-import Masthead from '../components/masthead';
-import NavBar from '../components/navbar';
 import useCategoryStore from '../store/categoryStore';
 import { CategoriesType, CategoryType, TaskItemData } from '../store/types';
 import { makeStyledComponent } from '../utils/styled';
-import { View } from 'moti';
+import { View, MotiView } from 'moti';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
@@ -40,8 +38,9 @@ export default function MainScreen() {
       setSelectedCategory(undefined);
       setData([]);
     }
-  }, [categories]);
+  }, []);
 
+  
   const handleToggleTaskItem = useCallback((item: TaskItemData) => {
     setData((prevData) => {
       const newData = [...prevData];
@@ -97,11 +96,17 @@ export default function MainScreen() {
 
   const renderItem = (item: CategoriesType, index: number) => (
     <Pressable key={item.id} onPress={() => handleCategorySelect(item, index)}>
-      <Box p={3} bg={selectedCategory?.id === item.id ? 'primary.400' : 'transparent'} borderRadius={8}>
-        <Text fontSize={18} bold>
-          {item.name}
-        </Text>
-      </Box>
+      <MotiView
+        from={{ scale: 0.5, opacity :0.8 }}
+        animate={{ scale: selectedCategory?.id === item.id ? 1 : 0.8, opacity: selectedCategory?.id === item.id ? 1 : 0.6 }}
+        transition={{ type: 'timing', duration: 500 }}
+      >
+        <Box p={3} bg={selectedCategory?.id === item.id ? 'primary.300' : 'transparent'} borderRadius={8}>
+          <Text fontSize={18} bold>
+            {item.name}
+          </Text>
+        </Box>
+      </MotiView>
     </Pressable>
   );
 

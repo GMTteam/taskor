@@ -45,7 +45,7 @@ const BottomMenuBar = () => {
 
     if (currentTab === 'Your Day') {
       animateIcon(yourDayScale, calendarScale, timelineScale);
-    } else if (currentTab === 'Calendar'){
+    } else if (currentTab === 'Calendar') {
       animateIcon(calendarScale, yourDayScale, timelineScale);
     } else {
       animateIcon(timelineScale, yourDayScale, calendarScale);
@@ -61,6 +61,7 @@ const BottomMenuBar = () => {
         <NavBar />
       </Masthead>
       <Tab.Navigator
+        initialRouteName="Your Day"
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color, size }) => {
             let scale;
@@ -97,7 +98,7 @@ const BottomMenuBar = () => {
             }
             return null;
           },
-          tabBarActiveTintColor: 'tomato',
+          tabBarActiveTintColor: 'green',
           tabBarInactiveTintColor: 'gray',
           tabBarLabel: () => null,
           tabBarStyle: {
@@ -114,7 +115,7 @@ const BottomMenuBar = () => {
             setCurrentTab(tabName);
           }
         }}
-      > 
+      >
         <Tab.Screen name="Timeline" component={TimelineScreen} />
         <Tab.Screen name="Your Day" component={MainScreen} />
         <Tab.Screen name="Calendar" component={CalendarScreen} />

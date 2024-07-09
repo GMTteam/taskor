@@ -21,13 +21,14 @@ interface Props extends Pick<PanGestureHandlerProps, 'simultaneousHandlers'> {
   children: React.ReactNode
   backView?: React.ReactNode
   onSwipeLeft?: () => void
+  onPress?: () => void
 }
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window')
 const SWIPE_THRESHOLD = -SCREEN_WIDTH * 0.2
 
 const SwipeView = (props: Props) => {
-  const { children, backView, onSwipeLeft, simultaneousHandlers } = props
+  const { children, backView, onSwipeLeft, onPress, simultaneousHandlers } = props
   const translateX = useSharedValue(0)
 
   const panGesture = useAnimatedGestureHandler<PanGestureHandlerGestureEvent>({

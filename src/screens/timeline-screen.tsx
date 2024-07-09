@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FlatList, Box, Text, VStack, HStack, Icon, useColorModeValue, View } from 'native-base';
-import { AntDesign } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavigationProp } from '@react-navigation/drawer';
 import useAlarmStore from '../store/datetimeStore';
@@ -43,51 +43,66 @@ export default function TimelineScreen() {
   }, [categories, alarmTimes]);
 
   const renderTask = (task: TaskItemData & { categoryName: string }) => (
-    <Box key={task.id} p={3} borderRadius={8} mb={2} bg={task.done ? "gray.300" : "white"} shadow={2}>
-        <HStack justifyContent="space-between">
-            <Text color={task.done ? "gray.400" : "blue.500"}>{alarmTimes[task.id]}</Text>
-            <Text color={task.done ? "gray.400" : "gray.500"} italic>{task.categoryName}</Text>
-        </HStack>
-        <Text color={task.done ? "gray.400" : "black"} fontSize={16} bold>{task.subject}</Text>
-        <Text color="gray.400">{task.description}</Text>
+    <Box key={task.id} p={3} borderRadius={8} mb={2} bg={task.done ? "gray.400" : "white"} shadow={2}>
+      <HStack justifyContent="space-between">
+        <Text color={task.done ? "gray.500" : "blue.500"}>{alarmTimes[task.id]}</Text>
+        <Text color={task.done ? "gray.500" : "gray.600"} italic>{task.categoryName}</Text>
+      </HStack>
+      <Text color={task.done ? "gray.500" : "black"} fontSize={16} bold>{task.subject}</Text>
+      <Text color="gray.400">{task.description}</Text>
     </Box>
   );
 
-  const renderHourSlot = ({ item: hour }) => {
+  const renderHourSlot = ({ item: hour, index: hourIndex }) => {
     if (!tasks[hour] || tasks[hour].length === 0) {
       return null;
     }
-
-    const allTasksDone = tasks[hour].every(task => task.done);
+  
+    const lastHourWithTasks = Object.keys(tasks).reverse().find(key => tasks[key].length > 0);
+    const isLastHour = lastHourWithTasks === hour;
+  
     return (
-        <HStack key={hour}>
-            <VStack width="50px" alignItems="center">
-                <Text color="gray.500" fontSize={16}>{hour}</Text>
-                {tasks[hour].length > 0 && (
-                    <View style={{ height: '100%', width: 2, backgroundColor: 'gray.300', position: 'absolute', top: 0 }} />
-                )}
-            </VStack>
-            <VStack flex={1} space={1}>
-            {tasks[hour].map((task) => (
-                <HStack key={task.id} alignItems="flex-start" mb={2} opacity={allTasksDone ? 0.5 : 1}>
-                    <VStack alignItems="center">
-                        <Icon
-                            as={AntDesign}
-                            name={task.done ? "checkcircle" : "checkcircleo"}
-                            size="sm"
-                            color={task.done ? "green.500" : "gray.400"}
-                            mt={1}
-                        />
-                    </VStack>
-                    <Box ml={4} flex={1}>
-                        {renderTask(task)}
-                    </Box>
-                </HStack>
-            ))}
-            </VStack>
-        </HStack>
+      <HStack key={hour} alignItems="flex-start" style={{ position: 'relative' }}>
+        <VStack width="50px" alignItems="center" mt={2}>
+          <Text color="gray.500" fontSize={16}>{hour}</Text>
+        </VStack>
+        <VStack flex={1} space={0}>
+          {tasks[hour].map((task, taskIndex) => {
+            const isLastTask = isLastHour && taskIndex === tasks[hour].length - 1;
+            return (
+              <HStack key={task.id} mb={2} opacity={1}>
+                <VStack alignItems="center" mt={2} ml={1}>
+                  <Icon
+                    as={Feather}
+                    name={task.done ? "check-circle" : "circle"}
+                    size="sm"
+                    color={task.done ? "green.600" : "gray.400"}
+                    mt={1}
+                  />
+                  {!isLastTask && (
+                    <View
+                      style={{
+                        flex: 1,
+                        width: 1,
+                        backgroundColor: "#A0AEC0",
+                        zIndex: -1,
+                        marginTop: 4,
+                        marginBottom: -14,
+                      }}
+                    />
+                  )}
+                </VStack>
+                <Box ml={4} flex={1}>
+                  {renderTask(task)}
+                </Box>
+              </HStack>
+            );
+          })}
+        </VStack>
+      </HStack>
     );
   };
+  
 
   const hours = Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0') + ':00');
 
@@ -98,6 +113,7 @@ export default function TimelineScreen() {
       keyExtractor={(item) => item}
       contentContainerStyle={{ padding: 16 }}
       bg={useColorModeValue('blueGray.200', 'primary.900')}
+      ItemSeparatorComponent={() => <View style={{ backgroundColor: 'transparent' }} />}
     />
   );
 }

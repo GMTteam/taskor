@@ -10,6 +10,10 @@ import TaskListScreen from '../screens/tasks-list-screen';
 import CalendarScreen from '../screens/calendar-screen';
 import TimelineScreen from '../screens/timeline-screen';
 import TaskDetailScreen from '../screens/tasks-detail-screen';
+import { enableScreens } from 'react-native-screens';
+import { TransitionPresets } from '@react-navigation/stack';
+
+enableScreens(); // Improve memory usage and performance
 
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
@@ -39,11 +43,12 @@ const AppNavigator = () => (
       name="TaskList"
       component={TaskListScreen}
       options={{
+        ...TransitionPresets.SlideFromRightIOS,
         headerShown: true,
         headerBackTitleVisible: false,
         presentation: 'modal',
         headerStyle: {
-          backgroundColor: useColorModeValue("white", 'gray'),
+          backgroundColor: useColorModeValue('white', 'gray'),
         },
       }}
     />

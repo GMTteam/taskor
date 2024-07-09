@@ -153,7 +153,7 @@ const TaskDetailScreen = () => {
         <VStack backgroundColor={useColorModeValue("gray.200", "gray.500")} borderRadius={10} mt={6}>
           <HStack alignItems="center" justifyContent="space-between" borderBottomWidth={1} borderBottomColor={useColorModeValue("gray.300", "gray.400")} ml={2} mr={2}>
             {alarmTime ? (
-              <Button ml={2} mt={2} onPress={handleDeleteAlarm} size="sm" background="transparent">
+              <Button mt={2} onPress={handleDeleteAlarm} size="sm" background="transparent">
                 <Text mb={2} color="red.600">Delete Alarm</Text>
               </Button>
             ) : (
