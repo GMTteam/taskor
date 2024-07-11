@@ -109,7 +109,7 @@ const TaskItem = (props: Props) => {
           w="full"
           px={4}
           py={2}
-          bg={useColorModeValue('blueGray.200', 'primary.900')}
+          bg={useColorModeValue('blueGray.300', 'primary.900')}
           borderColor={!isActiveDrop ? useColorModeValue('warmGray.50', 'primary.900') : useColorModeValue('primary.900', 'warmGray.50')}
           shadow={!isActiveDrop ? -1 : 6}
         >

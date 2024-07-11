@@ -30,6 +30,10 @@ export default function MainScreen() {
   const [newTask, setNewTask] = useState({ subject: '', description: '', alarmTime: '' });
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
+  const bgColorSelected = useColorModeValue('blueGray.300', 'primary.900');
+  const bgColorUnselected = useColorModeValue('blueGray.100', 'black');
+  const borderColor = useColorModeValue('blueGray.400', 'blueGray.700');
+
   useEffect(() => {
     if (categories && categories.length !== 0) {
       setSelectedCategory(categories[0]);
@@ -94,21 +98,35 @@ export default function MainScreen() {
     setData(category.listTask);
   }, [categories]);
 
-  const renderItem = (item: CategoriesType, index: number) => (
-    <Pressable key={item.id} onPress={() => handleCategorySelect(item, index)}>
-      <MotiView
-        from={{ scale: 0.5, opacity :0.8 }}
-        animate={{ scale: selectedCategory?.id === item.id ? 1 : 0.8, opacity: selectedCategory?.id === item.id ? 1 : 0.6 }}
-        transition={{ type: 'timing', duration: 500 }}
-      >
-        <Box p={3} bg={selectedCategory?.id === item.id ? 'primary.300' : 'transparent'} borderRadius={8}>
-          <Text fontSize={18} bold>
-            {item.name}
-          </Text>
-        </Box>
-      </MotiView>
-    </Pressable>
-  );
+  const renderItem = (item: CategoriesType, index: number) => {
+    const isSelected = selectedCategory?.id === item.id;
+    
+    return (
+      <Pressable key={item.id} onPress={() => handleCategorySelect(item, index)}>
+        <MotiView
+          from={{ scale: 0.5, opacity: 0.7 }}
+          animate={{ scale: isSelected ? 1 : 0.7, opacity: isSelected ? 1 : 0.6 }}
+          transition={{ type: 'timing', duration: 500 }}
+        >
+          <Box 
+            p={2} 
+            borderWidth={1} 
+            borderRadius={8} 
+            ml={1} 
+            borderBottomWidth={isSelected ? 0 : 1} 
+            borderBottomRadius={isSelected ? 0 : 8}
+            bg={isSelected ? bgColorSelected : bgColorUnselected}
+            borderColor={borderColor}
+          >
+            <Text fontSize={18} bold>
+              {item.name}
+            </Text>
+          </Box>
+        </MotiView>
+      </Pressable>
+    );
+  };
+  
 
   const handleShowDatePicker = () => setDatePickerVisibility(true);
   const handleHideDatePicker = () => setDatePickerVisibility(false);
@@ -165,8 +183,8 @@ export default function MainScreen() {
 
   return (
     <AnimatedColorBox flex={1} bg={useColorModeValue('warmGray.50', 'primary.900')} w="full">
-      <VStack flex={1} bg={useColorModeValue('blueGray.200', 'primary.900')} mt="-20px" borderTopLeftRadius="20px" borderTopRightRadius="20px" pt="20px">
-        <HStack paddingLeft={1.5} paddingRight={1.5}>
+      <VStack flex={1} bg={useColorModeValue('blueGray.300', 'primary.900')} mt="-20px" borderTopLeftRadius="20px" borderTopRightRadius="20px" pt="20px">
+        <HStack paddingLeft={1.5} paddingRight={1.5} bg={useColorModeValue('blueGray.200', 'primary.900')}>
           <FlatList ref={flatListRef} horizontal contentContainerStyle={{ width: 'auto' }} showsHorizontalScrollIndicator={false} data={categories} renderItem={({ item, index }) => renderItem(item, index)} keyExtractor={(item) => item.id} />
         </HStack>
         {categories.length !== 0 ? (
@@ -176,6 +194,7 @@ export default function MainScreen() {
             from={{ opacity: 0, scale: 0.3 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.5 }}
+            marginTop={-1}
           ></StyledView>
         ) : (
           <Box alignSelf="center" background={'amber.400'} p={2} borderRadius={8} mt={3}>
@@ -200,7 +219,7 @@ export default function MainScreen() {
         icon={<Icon color="white" as={<AntDesign name="plus" />} size="sm" />}
         colorScheme={useColorModeValue('blue', 'darkBlue')}
         bg={useColorModeValue('blue.500', 'blue.400')}
-        bottom={75}
+        bottom={99}
         onPress={() => {
           if (categories.length !== 0) {
             setModalVisible(true);

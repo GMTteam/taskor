@@ -21,6 +21,11 @@ export type TaskListScreenRouteProp = RouteProp<
   'TaskList'
 >;
 
+export type TaskListScreenNavigationProp = StackNavigationProp<
+  CalendarStackParamList,
+  'TaskList'
+>;
+
 export type RootStackParamList = {
   Home: undefined;
   TaskDetail: { task: TaskItemData };

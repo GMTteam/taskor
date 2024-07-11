@@ -43,13 +43,14 @@ const AppNavigator = () => (
       name="TaskList"
       component={TaskListScreen}
       options={{
-        ...TransitionPresets.SlideFromRightIOS,
         headerShown: true,
         headerBackTitleVisible: false,
         presentation: 'modal',
         headerStyle: {
-          backgroundColor: useColorModeValue('white', 'gray'),
+          backgroundColor: useColorModeValue('white', '#23282d'),
+          
         },
+        headerTintColor: useColorModeValue('black', 'white'),
       }}
     />
     <Stack.Screen

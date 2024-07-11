@@ -127,11 +127,12 @@ const TaskListScreen = () => {
             <Fab
               position="absolute"
               renderInPortal={false}
-              size="sm"
+              size="60"
               icon={<Icon color="white" as={<AntDesign name="plus" />} size="sm" />}
               colorScheme={useColorModeValue('blue', 'darkBlue')}
               bg={useColorModeValue('blue.500', 'blue.400')}
               onPress={() => setModalVisible(true)}
+              mb={10}
             />
             <Modal isOpen={modalVisible} onClose={() => setModalVisible(false)}>
               <Modal.Content>

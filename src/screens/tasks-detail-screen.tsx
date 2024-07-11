@@ -150,7 +150,7 @@ const TaskDetailScreen = () => {
             </Text>
           </>
         )}
-        <VStack backgroundColor={useColorModeValue("gray.200", "gray.500")} borderRadius={10} mt={6}>
+        <VStack backgroundColor={useColorModeValue("gray.200", "gray.700")} borderRadius={10} mt={6}>
           <HStack alignItems="center" justifyContent="space-between" borderBottomWidth={1} borderBottomColor={useColorModeValue("gray.300", "gray.400")} ml={2} mr={2}>
             {alarmTime ? (
               <Button mt={2} onPress={handleDeleteAlarm} size="sm" background="transparent">
@@ -197,7 +197,7 @@ const TaskDetailScreen = () => {
       </VStack>
       {isPriorityListVisible && (
         <Animated.View style={[{ position: 'absolute', right: 16, top: 300 }, animatedStyle]}>
-          <VStack space={2} mt={2} p={4} bg="gray.300" borderRadius={10} width={220}>
+          <VStack space={2} mt={2} p={4} bg="gray.700" borderRadius={10} width={220}>
             {priorityLevels.map(priority => (
               <Pressable key={priority.value} onPress={() => handlePrioritySelect(priority.value)} borderBottomWidth={1} borderBottomColor={priority.color}>
                 <Text ml={2} color={priority.color} >{priority.label}</Text>
@@ -212,7 +212,7 @@ const TaskDetailScreen = () => {
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
       />
-      <Button onPress={handleSave} mt={350} bg={useColorModeValue("gray.300", "gray.500")}  borderRadius={8}>
+      <Button onPress={handleSave} mt={350} bg={useColorModeValue("gray.300", "gray.700")}  borderRadius={8}>
         <Text>Save</Text>
       </Button>
     </Box>
