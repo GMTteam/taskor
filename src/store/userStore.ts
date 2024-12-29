@@ -16,7 +16,7 @@ const AVATAR_IMAGE_KEY = 'avatar_image';
 const MASTHEAD_IMAGE_KEY = 'masthead_image';
 
 const useUserStore = create<UserStoreState>((set) => ({
-    name: 'Shiva',
+    name: 'Homie',
     avatarImage: '',
     mastheadImage: '',
 
@@ -38,7 +38,7 @@ const useUserStore = create<UserStoreState>((set) => ({
     initializeUserStore: async () => {
         try {
             const storedName = await AsyncStorage.getItem(USER_NAME_KEY);
-            const name = storedName ? storedName : 'Shiva';
+            const name = storedName ? storedName : 'Homie';
             const storedAvatarImage = await AsyncStorage.getItem(AVATAR_IMAGE_KEY);
             const avatarImage = storedAvatarImage ? storedAvatarImage : '';
             const storedMastheadImage = await AsyncStorage.getItem(MASTHEAD_IMAGE_KEY);

@@ -31,7 +31,7 @@ const saveTasksToStorage = async (tasks: Map<string, Task[]>) => {
 };
 
 const scheduleNotification = async (task: string, notification: Task['notification']) => {
-  let trigger = (notification.time.getTime() - Date.now()) / 1000; // Convert milliseconds to seconds
+  let trigger = (notification.time.getTime() - Date.now()) / 1000;
 
   if (notification.type === '12 Hours') {
     trigger -= 12 * 60 * 60;
